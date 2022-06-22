@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// This file contains some helper functions used for string validation.
 
@@ -46,6 +47,17 @@ class ValidatorInputFormatter implements TextInputFormatter {
   }
 }
 
+class NameValidator extends StringValidator {
+  @override
+  bool isValid(String value) {
+    return value.length > 3;
+  }
+}
+
+class NumberEditingRegexValidator extends RegexValidator {
+  NumberEditingRegexValidator() : super(regexSource: "^[0-9]{10}\$");
+}
+
 class EmailEditingRegexValidator extends RegexValidator {
   EmailEditingRegexValidator() : super(regexSource: '^(|\\S)+\$');
 }
@@ -68,5 +80,15 @@ class MinLengthStringValidator extends StringValidator {
   @override
   bool isValid(String value) {
     return value.length >= minLength;
+  }
+}
+
+class StringLenthValidator extends StringValidator {
+  StringLenthValidator(this.length);
+  final int length;
+
+  @override
+  bool isValid(String value) {
+    return value.length == length;
   }
 }

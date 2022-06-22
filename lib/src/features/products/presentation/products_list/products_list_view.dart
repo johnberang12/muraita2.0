@@ -9,6 +9,7 @@ import 'package:muraita_2_0/src/constants/styles.dart';
 import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
 import '../../../../common_widgets/async_value_widget.dart';
 import '../../../../common_widgets/custom_list_tile.dart';
+import '../../../../common_widgets/custom_text.dart';
 import '../../../../constants/app_sizes.dart';
 import '../../../../routing/app_router.dart';
 import '../../data/fake_products_repository.dart';
@@ -156,9 +157,9 @@ class _ProductListTile extends StatelessWidget {
         product.title,
         style: kProductTitleSyle,
       ),
-      subTitle: Text(
+      subTitle: CustomText(
         product.description,
-        style: kProductSubTitleStyle,
+        fontSize: 12,
       ),
       caption: Text(
         'Php ${product.price}',
@@ -170,9 +171,9 @@ class _ProductListTile extends StatelessWidget {
           size: Sizes.p16,
           color: kBlack60,
         ),
-        Text(
+        CustomText(
           messageCount,
-          style: kMessageIconStyle,
+          fontSize: 8,
         ),
       ],
       trailing2: [
@@ -181,9 +182,9 @@ class _ProductListTile extends StatelessWidget {
           size: Sizes.p16,
           color: kBlack60,
         ),
-        Text(
+        CustomText(
           likeCount,
-          style: kMessageIconStyle,
+          fontSize: 8,
         ),
       ],
     );

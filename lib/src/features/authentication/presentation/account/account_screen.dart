@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
@@ -7,6 +6,7 @@ import '../../../../common_widgets/action_text_button.dart';
 import '../../../../common_widgets/alert_dialogs.dart';
 import '../../../../common_widgets/responsive_center.dart';
 import '../../../../constants/app_sizes.dart';
+import '../../data/auth_repository.dart';
 import '../../data/fake_auth_repository.dart';
 import 'account_screen_controller.dart';
 

@@ -35,3 +35,22 @@ const gapH24 = SizedBox(height: Sizes.p24);
 const gapH32 = SizedBox(height: Sizes.p32);
 const gapH48 = SizedBox(height: Sizes.p48);
 const gapH64 = SizedBox(height: Sizes.p64);
+
+///primary button
+const primaryButtonHeight = .08;
+const primaryButtonTextHeight = .04;
+
+///app icon size
+const iconAvatarSize = .07;
+const iconFontSize = .10;
+const logoNameSize = .05;
+const logoHookSize = .03;
+
+const welcomePageBodyTextSize = .025;
+const outlineInputHeight = .07;
+const registrationGuideSize = .040;
+const phoneNumberDisclosureSize = .035;
+
+const floatingActionMargin = .07;
+const appBarLeadingWidth = .35;
+const imageInputSize = .10;

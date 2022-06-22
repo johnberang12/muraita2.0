@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muraita_2_0/src/features/chats/chats_screen.dart';
-import 'package:muraita_2_0/src/features/neighbors/neighborhood_screen.dart';
-import '../features/authentication/data/fake_auth_repository.dart';
+import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/phone_number_sign_in_screen.dart';
+import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/phone_number_sign_in_state.dart';
+import '../features/authentication/data/auth_repository.dart';
 import '../features/authentication/presentation/account/account_screen.dart';
-import '../features/authentication/presentation/sign_in/email_password_sign_in_screen.dart';
-import '../features/authentication/presentation/sign_in/email_password_sign_in_state.dart';
+import '../features/chats/chats_screen.dart';
+import '../features/products/presentation/add_listing/add_listing_screen.dart';
+import '../features/products/presentation/add_listing/listings_screen.dart';
 import '../features/products/presentation/home_app_bar/notifications/notifications_screen.dart';
 import '../features/products/presentation/product_screen/product_screen.dart';
 import '../features/reviews/presentation/leave_review_screen/leave_review_screen.dart';
@@ -21,10 +22,12 @@ enum AppRoute {
   home,
   productListings,
   product,
+  listings,
   leaveReview,
   orders,
   account,
   signIn,
+  addListing,
   neighborhood,
   chats,
   profile,
@@ -85,12 +88,22 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ),
                 ],
               ),
+
               GoRoute(
                 path: 'productsSearch',
                 name: AppRoute.productsSearch.name,
                 pageBuilder: (context, state) => MaterialPage(
                   key: state.pageKey,
                   child: ProductSearchScreen(),
+                ),
+              ),
+              GoRoute(
+                path: 'addListing',
+                name: AppRoute.addListing.name,
+                pageBuilder: (context, state) => MaterialPage(
+                  key: state.pageKey,
+                  fullscreenDialog: true,
+                  child: AddListingScreen(),
                 ),
               ),
               GoRoute(
@@ -111,28 +124,28 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   child: const AccountScreen(),
                 ),
               ),
+              GoRoute(
+                path: 'listings',
+                name: AppRoute.listings.name,
+                pageBuilder: (context, state) {
+                  return MaterialPage(
+                    key: state.pageKey,
+                    fullscreenDialog: true,
+                    child: const ListingsScreen(),
+                  );
+                },
+              ),
+
+              ///temporarily inserted listings screen
               // GoRoute(
-              //   path: 'signIn',
-              //   name: AppRoute.signIn.name,
+              //   path: 'neighborhood',
+              //   name: AppRoute.neighborhood.name,
               //   pageBuilder: (context, state) => MaterialPage(
               //     key: state.pageKey,
               //     fullscreenDialog: true,
-              //     child: const EmailPasswordSignInScreen(
-              //       formType: EmailPasswordSignInFormType.signIn,
-              //     ),
+              //     child: const NeighborhoodScreen(),
               //   ),
               // ),
-
-              ///neighborhood screen
-              GoRoute(
-                path: 'neighborhood',
-                name: AppRoute.neighborhood.name,
-                pageBuilder: (context, state) => MaterialPage(
-                  key: state.pageKey,
-                  fullscreenDialog: true,
-                  child: const NeighborhoodScreen(),
-                ),
-              ),
 
               ///chats screen
               GoRoute(
@@ -141,7 +154,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 pageBuilder: (context, state) => MaterialPage(
                   key: state.pageKey,
                   fullscreenDialog: true,
-                  child: const ChatsScreen(),
+                  child: ChatsScreen(),
                 ),
               ),
             ],
@@ -154,8 +167,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => MaterialPage(
               key: state.pageKey,
               fullscreenDialog: true,
-              child: const EmailPasswordSignInScreen(
-                formType: EmailPasswordSignInFormType.register,
+              child: const PhoneNumberSignInScreen(
+                formType: PhoneNumberSignInFormType.register,
               ),
             ),
           )
