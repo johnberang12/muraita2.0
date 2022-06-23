@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muraita_2_0/src/features/authentication/domain/app_user.dart';
-import 'package:muraita_2_0/src/features/sign_in_with_phone/sign_in_with_phone.dart';
+import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/welcome_screen.dart';
 import 'package:muraita_2_0/src/routing/bottom_navigation_bar/home_page.dart';
 
 import 'features/authentication/data/auth_repository.dart';
@@ -17,6 +17,6 @@ class LandingPage extends ConsumerWidget {
     print('entered landing page');
 
     if (isLoggedIn) return const HomePage();
-    return const SignUpWithPhone();
+    return const WelcomePage();
   }
 }

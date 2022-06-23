@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:muraita_2_0/src/features/products/presentation/products_list/products_grid.dart';
 import 'package:muraita_2_0/src/features/products/presentation/products_list/products_list_view.dart';
-import 'package:muraita_2_0/src/features/products/presentation/products_list/productss_floating_action_button.dart';
+import 'package:muraita_2_0/src/features/products/presentation/products_list/products_floating_action_button.dart';
 
 import '../../../../common_widgets/responsive_center.dart';
 import '../../../../constants/app_sizes.dart';
