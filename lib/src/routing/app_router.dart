@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/phone_number_sign_in_screen.dart';
 import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/phone_number_sign_in_state.dart';
+import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/welcome_screen.dart';
 import '../features/authentication/data/auth_repository.dart';
 import '../features/authentication/presentation/account/account_screen.dart';
 import '../features/chats/chats_screen.dart';
@@ -18,7 +19,8 @@ import 'not_found_screen.dart';
 
 enum AppRoute {
   landingPage,
-  signInWithPhone,
+  phonesignin,
+  welcome,
   home,
   productListings,
   product,
@@ -39,15 +41,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   return GoRouter(
     initialLocation: '/',
-    debugLogDiagnostics: false,
+    debugLogDiagnostics: true,
     redirect: (state) {
       final isLoggedIn = authRepository.currentUser != null;
       if (isLoggedIn) {
-        if (state.location == '/signIn') {
-          return '/';
-        }
-      } else {
-        if (state.location == '/account' || state.location == '/orders') {
+        if (state.location == '/welcome/phonesingin') {
           return '/';
         }
       }
@@ -58,7 +56,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/',
         name: AppRoute.landingPage.name,
-        builder: (context, state) => LandingPage(),
+        builder: (context, state) => const LandingPage(),
         routes: [
           ///Home page is the default page that returns ProductListingsScreen
           GoRoute(
@@ -162,16 +160,26 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
           ///SignIn WIth phone screen
           GoRoute(
-            path: 'signInWithPhone',
-            name: AppRoute.signInWithPhone.name,
-            pageBuilder: (context, state) => MaterialPage(
-              key: state.pageKey,
-              fullscreenDialog: true,
-              child: const PhoneNumberSignInScreen(
-                formType: PhoneNumberSignInFormType.register,
-              ),
-            ),
-          )
+              path: 'welcome',
+              name: AppRoute.welcome.name,
+              pageBuilder: (context, state) => MaterialPage(
+                    key: state.pageKey,
+                    fullscreenDialog: true,
+                    child: const WelcomePage(),
+                  ),
+              routes: [
+                GoRoute(
+                  path: 'phonesingin',
+                  name: AppRoute.phonesignin.name,
+                  pageBuilder: (context, state) => MaterialPage(
+                    key: state.pageKey,
+                    fullscreenDialog: true,
+                    child: const PhoneNumberSignInScreen(
+                      formType: PhoneNumberSignInFormType.register,
+                    ),
+                  ),
+                )
+              ])
         ],
       ),
     ],

@@ -66,6 +66,7 @@ const kPhoneNumberDisclosure =
 const kOtpMessageGuide = 'Please enter the otp code sent to your phone number';
 
 const kInvalidNumberFormat = 'Invalid phone number format';
+const kInvalidOtpFormat = 'Invalid code format';
 
 ///add listing screen
 const kAddListingTitle = 'Add Listing';
@@ -86,4 +87,10 @@ const List<String> kListingCategories = [
   'fashion',
   'books',
   'others',
+];
+
+const List<String> kCountryCodes = [
+  '+63',
+  '+82',
+  '+1',
 ];

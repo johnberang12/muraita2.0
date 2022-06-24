@@ -9,7 +9,8 @@ enum PhoneNumberSignInFormType { register, otpVerification }
 
 mixin NameAndPhoneNumberValidators {
   final StringValidator nameSubmitValidator = MinLengthStringValidator(4);
-  final StringValidator phoneNumberSubmitValidator = StringLenthValidator(10);
+  final StringValidator phoneNumberSubmitValidator =
+      MinLengthStringValidator(10);
   final StringValidator otpSubmitValidator = MinLengthStringValidator(6);
 }
 
@@ -19,7 +20,7 @@ class PhoneNumberSignInState with NameAndPhoneNumberValidators {
     this.value = const AsyncValue.data(null),
   });
 
-  final PhoneNumberSignInFormType formType;
+  late PhoneNumberSignInFormType formType;
   final AsyncValue<void> value;
 
   bool get isLoading => value.isLoading;
@@ -77,6 +78,14 @@ extension EmailPasswordSignInStateX on PhoneNumberSignInState {
     }
   }
 
+  int get numberMaxLength {
+    if (formType == PhoneNumberSignInFormType.register) {
+      return 10;
+    } else {
+      return 6;
+    }
+  }
+
   PhoneNumberSignInFormType get secondaryActionFormType {
     if (formType == PhoneNumberSignInFormType.register) {
       return PhoneNumberSignInFormType.otpVerification;
@@ -117,6 +126,10 @@ extension EmailPasswordSignInStateX on PhoneNumberSignInState {
     return phoneNumberSubmitValidator.isValid(number);
   }
 
+  bool canSubmitOtp(String otp) {
+    return otpSubmitValidator.isValid(otp);
+  }
+
   String? nameErrorTExt(String name) {
     final bool showErrorText = !canSubmitName(name);
     final String errorText =
@@ -126,8 +139,15 @@ extension EmailPasswordSignInStateX on PhoneNumberSignInState {
 
   String? numberErrorText(String number) {
     final bool showErrorText = !canSubmitNumber(number);
-    final String errorText =
-        number.length <= 3 ? kInvalidNumberFormat : kInvalidNumberFormat;
+    const String errorText = kInvalidNumberFormat;
+    return showErrorText ? errorText : null;
+  }
+
+  String? otpErrorText(String otp) {
+    final bool showErrorText = !canSubmitOtp(otp);
+    final String errorText = otp.length <= 5 || otp.length > 6
+        ? kInvalidOtpFormat
+        : kInvalidOtpFormat;
     return showErrorText ? errorText : null;
   }
 }

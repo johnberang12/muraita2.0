@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:muraita_2_0/src/constants/strings.dart';
 import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
 
 const kDialogDefaultKey = Key('dialog-default-key');
@@ -67,8 +69,10 @@ Future<void> showExceptionAlertDialog({
     showAlertDialog(
       context: context,
       title: title,
-      content: exception.toString(),
-      defaultActionText: 'OK'.hardcoded,
+      content: exception == FirebaseException
+          ? exception.message
+          : exception.toString(),
+      defaultActionText: kOk,
     );
 
 Future<void> showNotImplementedAlertDialog({required BuildContext context}) =>

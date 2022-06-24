@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "559441697068",
+    "project_id": "muraita-app",
+    "storage_bucket": "muraita-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559441697068:android:8fcc2ee198700499dbf489",
+        "android_client_info": {
+          "package_name": "com.muraita.muraita_2_0"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "559441697068-ajcl8r8riuse24kqlfp78q73msirg2i1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.muraita.muraita_2_0",
+            "certificate_hash": "6ac55766af39c3e46233c985f774bde65769b5d0"
+          }
+        },
+        {
+          "client_id": "559441697068-fbalj3i2n0o49j19ctn5qjct8u4jofk6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdloEqhVW8ksqyRWB0EVRA97_4ueYDCRk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "559441697068-fbalj3i2n0o49j19ctn5qjct8u4jofk6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "559441697068-jm9ms2plpbu8uoa6ndvqqsbkvjo0cr8k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.muraita.muraita20"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

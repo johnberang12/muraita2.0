@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>559441697068-7tt787vsiaqjlodfdqrei8q3mm3d1gr6.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.559441697068-7tt787vsiaqjlodfdqrei8q3mm3d1gr6</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>559441697068-8ee0v4ljood958d5p3rs8ak6tjdpfuce.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD8OriCPBe5UoEXlGrR6HBl1L1gEGJS8cw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>559441697068</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>-2.tamurai.muraita20</string>
+	<key>PROJECT_ID</key>
+	<string>muraita-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>muraita-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:559441697068:ios:5843e716997cfd26dbf489</string>
+</dict>
+</plist>

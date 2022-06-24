@@ -2,21 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class OutlinedTextField extends StatelessWidget {
-  const OutlinedTextField(
-      {Key? key,
-      this.height = 64,
-      this.width = double.infinity,
-      required this.controller,
-      this.autofocus = false,
-      this.labelText,
-      this.hintText,
-      this.enabled = true,
-      this.validator,
-      this.textInputAction,
-      this.keyboardType,
-      this.onEditingComplete,
-      this.inputFormatters})
-      : super(key: key);
+  const OutlinedTextField({
+    Key? key,
+    this.height = 64,
+    this.width = double.infinity,
+    required this.controller,
+    this.autofocus = false,
+    this.labelText,
+    this.hintText,
+    this.enabled = true,
+    this.validator,
+    this.textInputAction,
+    this.keyboardType,
+    this.onEditingComplete,
+    this.inputFormatters,
+    this.onChange,
+    this.maxLength,
+  }) : super(key: key);
 
   final double height;
   final double width;
@@ -30,6 +32,8 @@ class OutlinedTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final VoidCallback? onEditingComplete;
   final List<TextInputFormatter>? inputFormatters;
+  final void Function(String)? onChange;
+  final int? maxLength;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +48,8 @@ class OutlinedTextField extends StatelessWidget {
             border: const OutlineInputBorder(),
             labelText: labelText,
             hintText: hintText,
-            enabled: enabled!),
+            enabled: enabled!,
+            counterText: ''),
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: validator,
         autocorrect: false,
@@ -53,6 +58,8 @@ class OutlinedTextField extends StatelessWidget {
         keyboardAppearance: Brightness.light,
         onEditingComplete: onEditingComplete,
         inputFormatters: inputFormatters,
+        onChanged: onChange,
+        maxLength: maxLength,
       ),
     );
   }

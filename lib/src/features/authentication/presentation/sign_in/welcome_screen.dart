@@ -22,6 +22,7 @@ class WelcomePage extends StatelessWidget {
         body: CustomBody(
       alignment: Alignment.center,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           BoxColumn(
@@ -44,7 +45,7 @@ class WelcomePage extends StatelessWidget {
           SizedBox(height: height * .20),
           PrimaryButton(
             text: kGetStartedButtonText,
-            onPressed: () => context.pushNamed(AppRoute.signInWithPhone.name),
+            onPressed: () => context.pushNamed(AppRoute.phonesignin.name),
           ),
         ],
       ),

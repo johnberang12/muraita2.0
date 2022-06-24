@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/string_validators.dart';
 import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
+
 /// Form type for email & password authentication
 enum EmailPasswordSignInFormType { signIn, register }
 

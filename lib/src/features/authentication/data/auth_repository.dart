@@ -1,110 +1,112 @@
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/phone_number_sign_in_state.dart';
+import '../../../common_widgets/alert_dialogs.dart';
+import '../../../constants/strings.dart';
 import '../../../utils/delay.dart';
 import '../../../utils/in_memory_store.dart';
 import '../domain/app_user.dart';
 
-abstract class AuthRepository {
-  Stream<AppUser?> authStateChanges();
-  Future<void> registerWithPhoneNumber(String name, String phoneNumber);
-  Future<void> verifyOtpCode(String otpCode);
-  Future<void> signInWithEmailAndPassword(String email, String password);
-  Future<void> createUserWithEmailAndPassword(String email, String password);
+abstract class AuthRepository<T> {
+  User? get currentUser;
+  Stream<T?> authStateChanges();
+  Future<void> registerWithPhoneNumber(
+    BuildContext context,
+    String phoneNumber,
+    VoidCallback codeSent,
+  );
+  Future<void> verifyOtpCode(BuildContext context, String name, String otpCode,
+      VoidCallback onSignedIn);
   Future<void> signOut();
 }
 
 class FirebaseAuthRepository implements AuthRepository {
+  final _authInstance = FirebaseAuth.instance;
+  late String _verificationID = kEmptyString;
+  late PhoneNumberSignInFormType formType;
+
   @override
-  Stream<AppUser?> authStateChanges() {
-    throw UnimplementedError();
+  User? get currentUser => FirebaseAuth.instance.currentUser;
+
+  @override
+  Stream<User?> authStateChanges() => _authInstance.authStateChanges();
+
+  @override
+  Future<void> registerWithPhoneNumber(
+      BuildContext context, String phoneNumber, VoidCallback codeSent) async {
+    await _authInstance.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        print('entered verification complete');
+
+        ///execute this when verification is complete
+      },
+      verificationFailed: (FirebaseAuthException exception) async {
+        formType = PhoneNumberSignInFormType.register;
+
+        ///execute this when verification failed
+        showExceptionAlertDialog(
+            context: context,
+            title: kOperationFailed,
+            exception: exception.message);
+      },
+      codeSent: (String verificationId, int? resendToken) async {
+        print('entered code sent');
+
+        ///verificationId is generated here when code is sent to the phone number
+        _verificationID = verificationId;
+        codeSent();
+      },
+      codeAutoRetrievalTimeout: (String verificationId) async {
+        print('entered code auto retrival');
+        _verificationID = verificationId;
+      },
+      // timeout: const Duration(seconds: 120),
+    );
   }
 
   @override
-  Future<void> registerWithPhoneNumber(String name, String phoneNumber) {
-    throw UnimplementedError();
-  }
+  Future<void> verifyOtpCode(BuildContext context, String name, String otpCode,
+      VoidCallback onSignedIn) async {
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      verificationId: _verificationID,
+      smsCode: otpCode,
+    );
 
-  @override
-  Future<void> verifyOtpCode(String otpCode) async {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> createUserWithEmailAndPassword(String email, String password) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> signInWithEmailAndPassword(String email, String password) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> signOut() {
-    throw UnimplementedError();
-  }
-}
-
-class FakeAuthRepository implements AuthRepository {
-  FakeAuthRepository({this.addDelay = true, this.formType});
-  final bool addDelay;
-  final _authState = InMemoryStore<AppUser?>(null);
-  PhoneNumberSignInFormType? formType;
-
-  @override
-  Stream<AppUser?> authStateChanges() => _authState.stream;
-  AppUser? get currentUser => _authState.value;
-
-  @override
-  Future<void> registerWithPhoneNumber(String name, String phoneNumber) async {
-    await delay(addDelay);
-
-    formType = PhoneNumberSignInFormType.otpVerification;
-  }
-
-  @override
-  Future<void> verifyOtpCode(String otpCode) async {
-    await delay(addDelay);
-
-    _createNewUser(otpCode);
-  }
-
-  @override
-  Future<void> signInWithEmailAndPassword(String email, String password) async {
-    await delay(addDelay);
-
-    _createNewUser(email);
-  }
-
-  @override
-  Future<void> createUserWithEmailAndPassword(
-      String email, String password) async {
-    await delay(addDelay);
-    _createNewUser(email);
+    print(_verificationID);
+    await _authInstance.signInWithCredential(credential).then((value) {
+      ///call this function if authentication is successful
+      _onSignedInSuccess(name, onSignedIn);
+    }).whenComplete(() {
+      ///thread enteres this block whether or not there is an arror
+    }).onError((FirebaseAuthException error, stackTrace) {
+      showExceptionAlertDialog(
+          context: context, title: kOperationFailed, exception: error.message);
+    }).catchError((onError) {
+      showExceptionAlertDialog(
+          context: context, title: kOperationFailed, exception: onError);
+    });
   }
 
   @override
   Future<void> signOut() async {
-    _authState.value = null;
+    _authInstance.signOut();
   }
 
-  void dispose() => _authState.close();
-
-  void _createNewUser(String email) {
-    _authState.value = AppUser(
-      uid: email.split('').reversed.join(),
-      email: email,
-    );
+  Future<void> _onSignedInSuccess(name, onSignedIn) async {
+    await currentUser?.updateDisplayName(name);
+    onSignedIn();
   }
 }
 
-final authRepositoryProvider = Provider<FakeAuthRepository>((ref) {
-  final auth = FakeAuthRepository();
-  ref.onDispose(() => auth.dispose());
+final authRepositoryProvider = Provider<FirebaseAuthRepository>((ref) {
+  final auth = FirebaseAuthRepository();
   return auth;
 });
 
-final authStateChangesProvider = StreamProvider.autoDispose<AppUser?>((ref) {
+final authStateChangesProvider = StreamProvider.autoDispose<User?>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   return authRepository.authStateChanges();
 });

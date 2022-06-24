@@ -5,7 +5,8 @@ import '../../data/fake_auth_repository.dart';
 class AccountScreenController extends StateNotifier<AsyncValue<void>> {
   AccountScreenController({required this.authRepository})
       : super(const AsyncData(null));
-  final FakeAuthRepository authRepository;
+  // final FakeAuthRepository authRepository;
+  final AuthRepository authRepository;
 
   Future<void> signOut() async {
     state = const AsyncLoading();
