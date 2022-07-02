@@ -10,9 +10,11 @@ import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
 import '../../../../common_widgets/async_value_widget.dart';
 import '../../../../common_widgets/custom_list_tile.dart';
 import '../../../../common_widgets/custom_text.dart';
+import '../../../../common_widgets/grid_layout.dart';
 import '../../../../constants/app_sizes.dart';
 import '../../../../routing/app_router.dart';
-import '../../data/fake_products_repository.dart';
+import '../../../../routing/goRouter/route_utils.dart';
+import '../../data/products_repository.dart';
 import '../../domain/product.dart';
 
 /// A widget that displays the list of products that match the search query.
@@ -33,14 +35,16 @@ class ProductListView extends ConsumerWidget {
                 style: Theme.of(context).textTheme.headline4,
               ),
             )
-          : ProductsLayoutGrid(
+          : GridLayout(
+              rowsCount: 1,
               itemCount: products.length,
               itemBuilder: (_, index) {
                 final product = products[index];
                 return _ProductListTile(
                   product: product,
                   onPressed: () => context.goNamed(
-                    AppRoute.product.name,
+                    // APP_Route.product.name,
+                    PAGES.product.name,
                     params: {'id': product.id},
                   ),
                 );
@@ -94,45 +98,6 @@ class ProductsLayoutGrid extends StatelessWidget {
   }
 }
 
-// class ProductListView extends ConsumerWidget {
-//   const ProductListView({super.key});
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     final productsListValue = ref.watch(productsListStreamProvider);
-//     final height = MediaQuery.of(context).size.height;
-//     return AsyncValueWidget<List<Product>>(
-//       value: productsListValue,
-//       data: (products) => products.isEmpty
-//           ? Center(
-//               child: Text(
-//                 'No products found'.hardcoded,
-//                 style: Theme.of(context).textTheme.headline4,
-//               ),
-//             )
-//           : SizedBox(
-//               height: height,
-//               child: ListView.separated(
-//                 itemCount: products.length,
-//                 separatorBuilder: (context, index) => const Divider(
-//                   thickness: 0.5,
-//                 ),
-//                 itemBuilder: (_, index) {
-//                   final product = products[index];
-//                   return _ProductListTile(
-//                     product: product,
-//                     onPressed: () => context.goNamed(
-//                       AppRoute.product.name,
-//                       params: {'id': product.id},
-//                     ),
-//                   );
-//                 },
-//               ),
-//             ),
-//     );
-//   }
-// }
-
 /// Grid widget with content-sized items.
 /// See: https://codewithandrea.com/articles/flutter-layout-grid-content-sized-items/
 class _ProductListTile extends StatelessWidget {
@@ -150,15 +115,15 @@ class _ProductListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomListTile(
       onTap: onPressed,
-      thumbnail: CustomImage(
-        imageUrl: product.imageUrl,
+      thumbnail: const CustomImage(
+        imageUrl: 'assets/products/bruschetta-plate.jpg',
       ),
       title: Text(
-        product.title,
+        product.title!,
         style: kProductTitleSyle,
       ),
       subTitle: CustomText(
-        product.description,
+        product.description!,
         fontSize: 12,
       ),
       caption: Text(

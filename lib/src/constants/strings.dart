@@ -25,6 +25,8 @@ const kSuccessful = 'Successful';
 const kError = 'Error';
 const kEmptyString = '';
 const kPeso = '₱';
+const kLogin = 'login';
+const kSubmit = 'Submit';
 
 ///welcome screen
 const kLogoName = 'muraita';
@@ -32,6 +34,7 @@ const kLogoHook = 'SecondHand Local Market';
 const kIntroductoryTitle =
     'Sell your old stuff or find stuffs you need from your neighbors';
 const kGetStartedButtonText = 'Get started';
+const kAlreadyHaveAccount = 'Already have an account?';
 
 ///registration screen
 const kSignInTitle = 'Sign in';
@@ -67,6 +70,8 @@ const kOtpMessageGuide = 'Please enter the otp code sent to your phone number';
 
 const kInvalidNumberFormat = 'Invalid phone number format';
 const kInvalidOtpFormat = 'Invalid code format';
+
+const kNumberMaxLength = 10;
 
 ///add listing screen
 const kAddListingTitle = 'Add Listing';

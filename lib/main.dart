@@ -1,6 +1,8 @@
 import 'dart:async';
-
+import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+// import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -12,11 +14,10 @@ void main() async {
   // * For more info on error handling, see:
   // * https://docs.flutter.dev/testing/errors
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+      // options: DefaultFirebaseOptions.currentPlatform,
+      );
   await runZonedGuarded(() async {
-
-
-
     // turn off the # in the URLs on the web
     GoRouter.setUrlPathStrategy(UrlPathStrategy.path);
     // * Entry point of the app
@@ -31,7 +32,7 @@ void main() async {
         home: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.red,
-            title: Text('An error occurred'.hardcoded),
+            title: const Text('An error occurred'),
           ),
           body: Center(child: Text(details.toString())),
         ),

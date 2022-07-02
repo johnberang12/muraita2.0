@@ -4,9 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muraita_2_0/src/features/authentication/data/auth_repository.dart';
-import 'package:muraita_2_0/src/features/products/presentation/products_list/products_grid.dart';
 import 'package:muraita_2_0/src/features/products/presentation/products_list/products_list_view.dart';
-import 'package:muraita_2_0/src/features/products/presentation/products_list/products_floating_action_button.dart';
+import 'package:muraita_2_0/src/features/products/presentation/products_list/home_floating_action.dart';
 
 import '../../../../common_widgets/responsive_center.dart';
 import '../../../../constants/app_sizes.dart';
@@ -58,16 +57,12 @@ class _ProductsListScreenState extends ConsumerState<ProductsListScreen> {
       appBar: const HomeAppBar(),
       body: CustomScrollView(
         controller: _scrollController,
-        slivers: [
+        slivers: const [
           ResponsiveSliverCenter(
-            padding: EdgeInsets.all(Sizes.p16),
-            child: screenWidth < Breakpoint.tablet
-                ? ProductListView()
-                : ProductsGrid(),
-          ),
+              padding: EdgeInsets.all(Sizes.p16), child: ProductListView()),
         ],
       ),
-      floatingActionButton: FloatingAction(),
+      floatingActionButton: HomeFloatingAction(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
     );
   }

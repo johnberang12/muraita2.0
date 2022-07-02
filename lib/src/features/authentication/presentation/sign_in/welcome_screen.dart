@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muraita_2_0/src/constants/app_colors.dart';
 import 'package:muraita_2_0/src/constants/app_sizes.dart';
 import '../../../../common_widgets/app_icon.dart';
 import '../../../../common_widgets/custom_body.dart';
@@ -9,6 +10,7 @@ import '../../../../common_widgets/primary_button.dart';
 import '../../../../common_widgets/box_column.dart';
 import '../../../../constants/strings.dart';
 import '../../../../routing/app_router.dart';
+import '../../../../routing/goRouter/route_utils.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -42,10 +44,12 @@ class WelcomePage extends StatelessWidget {
             kIntroductoryTitle,
             fontSize: height * welcomePageBodyTextSize,
           ),
-          SizedBox(height: height * .20),
+          SizedBox(height: height * .17),
           PrimaryButton(
             text: kGetStartedButtonText,
-            onPressed: () => context.pushNamed(AppRoute.phonesignin.name),
+            onPressed: () => context.pushNamed(AppRoute.phonesignin.name
+                // PAGES.registration.name
+                ),
           ),
         ],
       ),

@@ -4,14 +4,16 @@ import '../common_widgets/empty_placeholder_widget.dart';
 
 /// Simple not found screen used for 404 errors (page not found on web)
 class NotFoundScreen extends StatelessWidget {
-  const NotFoundScreen({super.key});
-
+  const NotFoundScreen({super.key, required this.errorMessage});
+  final String errorMessage;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('404 - Page not found!'),
+      ),
       body: EmptyPlaceholderWidget(
-        message: '404 - Page not found!'.hardcoded,
+        message: errorMessage,
       ),
     );
   }

@@ -6,7 +6,8 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_icon_round"
-        android:label="muraita_2_0">
+        android:label="muraita_2_0"
+        android:requestLegacyExternalStorage="true">
         <activity android:name=".SplashScreenActivity"
             android:theme="@style/SplashScreenTheme"
             android:exported="true">

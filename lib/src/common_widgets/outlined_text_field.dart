@@ -4,9 +4,10 @@ import 'package:flutter/services.dart';
 class OutlinedTextField extends StatelessWidget {
   const OutlinedTextField({
     Key? key,
+    this.initialValue,
+    this.controller,
     this.height = 64,
     this.width = double.infinity,
-    required this.controller,
     this.autofocus = false,
     this.labelText,
     this.hintText,
@@ -22,6 +23,7 @@ class OutlinedTextField extends StatelessWidget {
 
   final double height;
   final double width;
+  final String? initialValue;
   final TextEditingController? controller;
   final bool autofocus;
   final String? labelText;
@@ -42,6 +44,7 @@ class OutlinedTextField extends StatelessWidget {
       width: width,
       child: TextFormField(
         key: key,
+        initialValue: initialValue,
         controller: controller,
         autofocus: autofocus,
         decoration: InputDecoration(

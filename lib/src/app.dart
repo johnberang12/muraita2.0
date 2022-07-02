@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:muraita_2_0/src/constants/app_colors.dart';
+import 'package:muraita_2_0/src/features/chats/presentation/chats_list_screen.dart';
 import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
 import 'package:muraita_2_0/src/routing/app_router.dart';
 
@@ -18,8 +20,8 @@ class MyApp extends ConsumerWidget {
       theme: ThemeData(
         primarySwatch: Colors.grey,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xffffbf00),
-          foregroundColor: Colors.white,
+          backgroundColor: appBackground,
+          foregroundColor: kBlack80,
           elevation: 0,
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(

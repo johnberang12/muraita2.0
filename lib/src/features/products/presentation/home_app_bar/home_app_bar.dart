@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muraita_2_0/src/constants/app_sizes.dart';
+import 'package:muraita_2_0/src/features/authentication/data/auth_repository.dart';
 import 'package:muraita_2_0/src/features/products/presentation/home_app_bar/shopping_cart_icon.dart';
 import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
 import '../../../../constants/app_sizes.dart';
@@ -25,9 +26,11 @@ class HomeAppBar extends ConsumerWidget with PreferredSizeWidget {
     // ! MediaQuery is used on the assumption that the widget takes up the full
     // ! width of the screen. If that's not the case, LayoutBuilder should be
     // ! used instead.
-
+    ///to be changed with location
+    final auth = ref.watch(authRepositoryProvider);
+    final userName = auth.currentUser?.displayName;
     return AppBar(
-      title: Text('My Shop'.hardcoded),
+      title: Text(userName!),
       actions: [
         InkWell(
             onTap: () => context.pushNamed(AppRoute.productsSearch.name),

@@ -25,6 +25,7 @@ class ClearTextField extends StatelessWidget {
           border: InputBorder.none,
           label: CustomText(label!, color: kBlack40),
         ),
+        autocorrect: false,
       ),
     );
   }

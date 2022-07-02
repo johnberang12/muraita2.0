@@ -51,14 +51,6 @@ class NumberEditingRegexValidator extends RegexValidator {
       : super(regexSource: '^([+][0-9][0-9]?)[0-9]{10}\$');
 }
 
-class EmailEditingRegexValidator extends RegexValidator {
-  EmailEditingRegexValidator() : super(regexSource: '^(|\\S)+\$');
-}
-
-class EmailSubmitRegexValidator extends RegexValidator {
-  EmailSubmitRegexValidator() : super(regexSource: '^\\S+@\\S+\\.\\S+\$');
-}
-
 class NonEmptyStringValidator extends StringValidator {
   @override
   bool isValid(String value) {

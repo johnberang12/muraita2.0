@@ -7,12 +7,15 @@ import '../../../../common_widgets/custom_image.dart';
 import '../../../../common_widgets/empty_placeholder_widget.dart';
 import '../../../../common_widgets/responsive_center.dart';
 import '../../../../common_widgets/responsive_two_column_layout.dart';
+import '../../../../constants/app_colors.dart';
 import '../../../../constants/app_sizes.dart';
+
 import '../../../../utils/currency_formatter.dart';
 import '../../../reviews/presentation/product_reviews/product_reviews_list.dart';
-import '../../data/fake_products_repository.dart';
+import '../../data/products_repository.dart';
 import '../../domain/product.dart';
 import '../home_app_bar/home_app_bar.dart';
+import 'product_bottom_bar.dart';
 import 'leave_review_action.dart';
 
 /// Shows the product page for a given product ID.
@@ -23,7 +26,6 @@ class ProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const HomeAppBar(),
       body: Consumer(
         builder: (context, ref, _) {
           final productValue = ref.watch(productProvider(productId));
@@ -33,13 +35,31 @@ class ProductScreen extends StatelessWidget {
                 ? EmptyPlaceholderWidget(
                     message: 'Product not found'.hardcoded,
                   )
-                : CustomScrollView(
-                    slivers: [
-                      ResponsiveSliverCenter(
-                        padding: const EdgeInsets.all(Sizes.p16),
-                        child: ProductDetails(product: product),
+                : Column(
+                    children: [
+                      Expanded(
+                        flex: 88,
+                        child: CustomScrollView(
+                          slivers: [
+                            const SliverAppBar(
+                              floating: true,
+                              backgroundColor: appBackground,
+                              foregroundColor: kPrimaryHue,
+                              title: Icon(Icons.home),
+                            ),
+                            ResponsiveSliverCenter(
+                              padding: const EdgeInsets.all(Sizes.p16),
+                              child: ProductDetails(product: product),
+                            ),
+                            ProductReviewsList(productId: productId),
+                          ],
+                        ),
                       ),
-                      ProductReviewsList(productId: productId),
+                      const Divider(height: 0.5),
+                      Expanded(
+                        flex: 12,
+                        child: ProductBottomBar(product: product),
+                      )
                     ],
                   ),
           );
@@ -61,10 +81,10 @@ class ProductDetails extends StatelessWidget {
     final priceFormatted = kCurrencyFormatter.format(product.price);
 
     return ResponsiveTwoColumnLayout(
-      startContent: Card(
+      startContent: const Card(
         child: Padding(
-          padding: const EdgeInsets.all(Sizes.p16),
-          child: CustomImage(imageUrl: product.imageUrl),
+          padding: EdgeInsets.all(Sizes.p16),
+          child: CustomImage(imageUrl: 'assets/products/bruschetta-plate.jpg'),
         ),
       ),
       spacing: Sizes.p16,
@@ -74,13 +94,14 @@ class ProductDetails extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(product.title, style: Theme.of(context).textTheme.headline6),
+              Text(product.title!,
+                  style: Theme.of(context).textTheme.headline6),
               gapH8,
-              Text(product.description),
+              Text(product.description!),
               // Only show average if there is at least one rating
               if (product.numRatings >= 1) ...[
                 gapH8,
-                ProductAverageRating(product: product),
+                ProductAverageRating(product),
               ],
               gapH8,
               const Divider(),

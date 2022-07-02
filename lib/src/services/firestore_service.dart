@@ -1,4 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:muraita_2_0/src/features/authentication/data/auth_repository.dart';
+import 'package:muraita_2_0/src/features/authentication/data/users_repository.dart';
+import 'package:muraita_2_0/src/services/api_path.dart';
+
+import '../features/authentication/domain/app_user.dart';
+import '../features/products/presentation/add_product/add_product_screen.dart';
 
 class FirestoreService {
   FirestoreService._();
@@ -16,6 +23,36 @@ class FirestoreService {
   Future<void> deleteData({required String path}) async {
     final reference = FirebaseFirestore.instance.doc(path);
     await reference.delete();
+  }
+
+  Future<void> updateUserData({
+    required String uid,
+    String? displayName,
+    String? phoneNumber,
+    String? email,
+    bool? emailVerified,
+    String? photoUrl,
+    String? birthDate,
+    String? providedData,
+    bool? success,
+  }) async {
+    final authRepository = FirebaseAuthRepository();
+    final reference = FirebaseFirestore.instance.doc(APIPath.user(uid));
+    final userData = authRepository.currentUser;
+
+    final user = AppUser(
+      id: uid,
+      uid: uid,
+      displayName: displayName ?? userData?.displayName,
+      phoneNumber: phoneNumber ?? userData!.phoneNumber!,
+      email: email ?? userData?.email ?? '',
+      emailVerified: emailVerified ?? userData?.emailVerified ?? false,
+      photoUrl: photoUrl ?? userData?.photoURL ?? '',
+      birthDate: birthDate ?? '',
+      providedData: providedData ?? '',
+      success: success ?? true,
+    );
+    await reference.set(user.toMap());
   }
 
   Stream<List<T>> collectionStream<T>(
