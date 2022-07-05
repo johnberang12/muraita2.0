@@ -8,7 +8,7 @@ import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/sig
 import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/welcome_screen.dart';
 import '../features/authentication/data/auth_repository.dart';
 import '../features/authentication/presentation/account/presentation/account_screen.dart';
-import '../features/authentication/presentation/account/presentation/edit_profile/presentation/image_gallery_screen.dart';
+import '../../photo_manager/image_gallery_screen.dart';
 import '../features/authentication/presentation/sign_in/name_registration_screen.dart';
 import '../features/chats/presentation/chat_screen.dart';
 import '../features/products/presentation/add_product/add_product_screen.dart';
@@ -158,7 +158,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     pageBuilder: (context, state) => MaterialPage(
                           key: state.pageKey,
                           fullscreenDialog: true,
-                          child: const EditProfileScreen(),
+                          child: EditProfileScreen(),
                         ),
                     routes: [
                       GoRoute(

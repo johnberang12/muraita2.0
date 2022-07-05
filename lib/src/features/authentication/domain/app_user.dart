@@ -29,7 +29,7 @@ class AppUser {
     return AppUser(
       id: userId,
       uid: map['uid'],
-      displayName: map['name'],
+      displayName: map['displayName'],
       phoneNumber: map['phoneNumber'],
       email: map['email'],
       emailVerified: map['emailVerified'],
@@ -42,8 +42,9 @@ class AppUser {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'uid': uid,
-      'title': displayName,
+      'displayName': displayName,
       'phoneNumber': phoneNumber,
       'email': email,
       'emailVerified': emailVerified,

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muraita_2_0/src/constants/styles.dart';
+import 'package:muraita_2_0/src/features/authentication/data/users_repository.dart';
 
 import '../../../../../../common_widgets/async_value_widget.dart';
 import '../../../../../../common_widgets/custom_image.dart';
@@ -28,7 +29,9 @@ class ProfileInfo extends ConsumerWidget {
 
     final auth = ref.watch(authRepositoryProvider);
     final userName = auth.currentUser?.displayName;
-    final phonNumber = auth.currentUser?.phoneNumber;
+    final phoneNumber = auth.currentUser?.phoneNumber;
+    final photoUrl = auth.currentUser?.photoURL;
+
     return userName == null
         ? const CircularProgressIndicator()
         : Row(
@@ -36,8 +39,11 @@ class ProfileInfo extends ConsumerWidget {
               Expanded(
                 flex: 27,
                 child: ClipOval(
-                  child: CustomImage(
-                    imageUrl: _profileImage,
+                  child: AspectRatio(
+                    aspectRatio: 1.0,
+                    child: CustomImage(
+                      imageUrl: photoUrl ?? _profileImage,
+                    ),
                   ),
                 ),
               ),
@@ -61,7 +67,7 @@ class ProfileInfo extends ConsumerWidget {
                       ),
                       gapH16,
                       Text(
-                        phonNumber!,
+                        phoneNumber!,
                         style: Styles.k12,
                       ),
                     ],

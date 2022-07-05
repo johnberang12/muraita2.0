@@ -8,28 +8,20 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CameraRepository {
-  XFile? imageTaken;
+  File? imageTaken;
 
-  Future<XFile?> takePicture(void Function(String) onException(e)) async {
-    try {
-      final XFile? image = await ImagePicker().pickImage(
-        source: ImageSource.camera,
-        maxHeight: 300,
-        maxWidth: 300,
-      );
+  Future<File?> takePicture() async {
+    final XFile? image = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxHeight: 300,
+      maxWidth: 300,
+    );
+    if (image == null) return imageTaken = null;
 
-      imageTaken = image;
-    } on PlatformException catch (e) {
-      onException(e);
-    }
+    imageTaken = File(image.path);
   }
 }
 
 final cameraRepositoryProvider = Provider<CameraRepository>((ref) {
   return CameraRepository();
-});
-
-final imageTakenProvider = StateProvider.autoDispose<XFile?>((ref) {
-  final controller = ref.watch(cameraRepositoryProvider);
-  return controller.imageTaken;
 });

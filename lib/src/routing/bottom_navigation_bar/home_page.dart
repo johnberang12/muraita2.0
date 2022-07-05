@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   Map<TabItem, WidgetBuilder> get widgetBuilders {
     return {
       TabItem.home: (_) => const ProductsListScreen(),
-      TabItem.neighborhood: (_) => const NeighborhoodScreen(),
+      TabItem.neighborhood: (_) =>  NeighborhoodScreen(),
       TabItem.chats: (_) => const ChatsListScreen(),
       TabItem.account: (_) => const AccountScreen(),
     };

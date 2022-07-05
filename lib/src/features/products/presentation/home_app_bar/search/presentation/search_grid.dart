@@ -1,45 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:muraita_2_0/src/common_widgets/async_value_widget.dart';
 import 'package:muraita_2_0/src/constants/styles.dart';
+
 import '../../../../../../common_widgets/grid_layout.dart';
 import '../../../../../../constants/app_sizes.dart';
 import '../data/search_product_repository.dart';
+import '../domain/search.dart';
+import 'dart:developer' as dev;
 
 /// A widget that displays the list of products that match the search query.
-class SearchGrid extends StatefulWidget {
+class SearchGrid extends ConsumerStatefulWidget {
   const SearchGrid({super.key});
 
   @override
-  State<SearchGrid> createState() => _SearchGridState();
+  ConsumerState<SearchGrid> createState() => _SearchGridState();
 }
 
-class _SearchGridState extends State<SearchGrid> {
-  final _repository = SearchRepository.instance;
-
-  Future<void> _onDeleteItem(String id) async {
-    await _repository.deleteItem(context, id);
-    setState(() {});
+class _SearchGridState extends ConsumerState<SearchGrid> {
+  Future<void> _onDeleteItem(
+      BuildContext context, WidgetRef ref, String id) async {
+    final controller = ref.watch(searchRepositoryProvider);
+    await controller.deleteItem(context, id);
+    ref.refresh(searchListFutureProvider);
   }
 
+  // @override
   @override
-  void initState() {
-    _repository.getSearches();
-    print(_repository.getSearches());
-    super.initState();
-  }
+  Widget build(BuildContext context) {
+    final controller = ref.watch(searchRepositoryProvider);
+    final AsyncValue<List> searchList = ref.watch(searchListFutureProvider);
 
-  @override
-  Widget build(
-    BuildContext context,
-  ) {
-    return FutureBuilder<List>(
-        future: _repository.getSearches(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return GridLayout(
+    return AsyncValueWidget<List>(
+        value: searchList,
+        data: (searches) => GridLayout(
               rowsCount: 2,
-              itemCount: snapshot.data?.length,
+              itemCount: searches.length,
               itemBuilder: (_, index) {
-                final search = snapshot.data![index];
+                final search = searches[index];
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -55,7 +53,7 @@ class _SearchGridState extends State<SearchGrid> {
                             style: kProductTitleSyle,
                           ),
                         ),
-                        onTap: () => _repository.searchItem(search.title),
+                        onTap: () => controller.searchItem(search.title),
                       ),
                     ),
                     Expanded(
@@ -65,15 +63,12 @@ class _SearchGridState extends State<SearchGrid> {
                           Icons.close,
                           size: Sizes.p12,
                         ),
-                        onTap: () => _onDeleteItem(search.id),
+                        onTap: () => _onDeleteItem(context, ref, search.id),
                       ),
                     ),
                   ],
                 );
               },
-            );
-          }
-          return const Center(child: CircularProgressIndicator());
-        });
+            ));
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:muraita_2_0/src/features/authentication/data/auth_repository.dart';
 
 import '../../../services/api_path.dart';
 import '../../../services/firestore_service.dart';
@@ -20,6 +21,7 @@ abstract class UsersDatabase {
 
 class UsersRepository implements UsersDatabase {
   final _service = FirestoreService.instance;
+  final _auth = FirebaseAuthRepository();
 
   @override
   Future<void> setUser(AppUser user) => _service.setData(
@@ -62,8 +64,17 @@ class UsersRepository implements UsersDatabase {
   @override
   Future<void> updateSuccess(String userId, bool success) =>
       _service.updateUserData(uid: userId, success: success);
+
+  Stream<AppUser> watchUserInfo() => _service.documentStream<AppUser>(
+      path: APIPath.user(_auth.currentUser!.uid),
+      builder: (data, userId) => AppUser.fromMap(data, userId));
 }
 
 final userRepositoryProvider = Provider<UsersRepository>((ref) {
   return UsersRepository();
+});
+
+final userInfoProvider = StreamProvider<AppUser?>((ref) {
+  final repository = ref.watch(userRepositoryProvider);
+  return repository.watchUserInfo();
 });

@@ -81,10 +81,13 @@ class ProductDetails extends StatelessWidget {
     final priceFormatted = kCurrencyFormatter.format(product.price);
 
     return ResponsiveTwoColumnLayout(
-      startContent: const Card(
+      startContent: Card(
         child: Padding(
-          padding: EdgeInsets.all(Sizes.p16),
-          child: CustomImage(imageUrl: 'assets/products/bruschetta-plate.jpg'),
+          padding: const EdgeInsets.all(Sizes.p16),
+          child: Image.asset(
+            'assets/products/bruschetta-plate.jpg',
+            fit: BoxFit.cover,
+          ),
         ),
       ),
       spacing: Sizes.p16,

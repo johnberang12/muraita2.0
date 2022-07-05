@@ -4,6 +4,7 @@ import 'package:muraita_2_0/src/constants/app_colors.dart';
 import 'package:muraita_2_0/src/features/authentication/presentation/account/presentation/account_widgets/favorites.dart';
 import 'package:muraita_2_0/src/features/authentication/presentation/account/presentation/account_widgets/settings_list.dart';
 import 'package:muraita_2_0/src/features/authentication/presentation/account/presentation/account_widgets/social_media.dart';
+import 'package:muraita_2_0/src/features/authentication/presentation/account/presentation/account_widgets/user_info_stream.dart';
 import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
 import 'package:muraita_2_0/src/utils/async_value_ui.dart';
 import '../../../../../common_widgets/action_text_button.dart';
@@ -53,7 +54,7 @@ class AccountScreen extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: Sizes.p16),
                     child: Column(
                       children: const [
-                        Expanded(flex: 20, child: ProfileInfo()),
+                        Expanded(flex: 20, child: UserInfoStream()),
                         Divider(
                           height: 20,
                         ),

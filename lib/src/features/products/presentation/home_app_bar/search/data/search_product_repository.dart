@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../../../../../common_widgets/alert_dialogs.dart';
@@ -8,12 +9,9 @@ import '../domain/search.dart';
 String documentIdFromCurrentDate() => DateTime.now().toIso8601String();
 
 class SearchRepository {
-  SearchRepository._();
-  static final instance = SearchRepository._();
-
   final _db = SQLite.instance;
 
-  Future<List> getSearches() async {
+  Future<List> fetchSearches() async {
     final searches = await _db.getAll(table: 'productSearch');
     List searchList = await searches
         .map((search) => Search(id: search['id'], title: search['name']))
@@ -47,3 +45,13 @@ class SearchRepository {
     ///TODO: implement search item
   }
 }
+
+final searchRepositoryProvider =
+    Provider<SearchRepository>((ref) => SearchRepository());
+
+final searchListFutureProvider = FutureProvider<List>((ref) async {
+  final controller = ref.watch(searchRepositoryProvider);
+  List searches = await controller.fetchSearches();
+
+  return searches;
+});

@@ -115,8 +115,8 @@ class _ProductListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomListTile(
       onTap: onPressed,
-      thumbnail: const CustomImage(
-        imageUrl: 'assets/products/bruschetta-plate.jpg',
+      thumbnail: Image.asset(
+        'assets/products/bruschetta-plate.jpg',
       ),
       title: Text(
         product.title!,

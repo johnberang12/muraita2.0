@@ -137,78 +137,76 @@ class _BuidContentsState extends State<_BuidContents> {
         padding: EdgeInsets.symmetric(horizontal: width * 0.03),
         child: Form(
           key: widget.formKey,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Divider(height: 0.5),
+          child: SingleChildScrollView(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Divider(height: 0.5),
 
-            ///comment this image for the sake of setting up save data function
+              ///comment this image for the sake of setting up save data function
 
-            // CustomImageInput(
-            //   onTap: () => {},
-            //   height: height * imageInputSize,
-            //   verticalPadding: height * 0.015,
-            // ),
-            const Divider(
-              height: 0.5,
-            ),
-            SizedBox(height: height * 0.03),
+              const CustomImageInput(),
+              const Divider(
+                height: 0.5,
+              ),
+              SizedBox(height: height * 0.03),
 
-            ///title field
-            ClearTextField(
-              controller: widget.titleController,
-              label: kListingTitleLabel,
-            ),
-            const Divider(
-              height: 0.5,
-            ),
-            SizedBox(
-              height: height * .02,
-            ),
-            CustomDropdownButton(
-              defaultHint:
-                  widget.category == '' ? _defaultValue : widget.category,
-              listItems: kListingCategories,
-              verticalPadding: height * 0.03,
-              onChanged: (value) => _selectCategory(value!),
-            ),
-            const Divider(
-              height: 0.5,
-            ),
-            SizedBox(height: height * 0.02),
-            Row(
-              children: [
-                ClearTextField(
-                  controller: widget.priceController,
-                  label: kPriceLabel,
-                  width: width * 0.6,
-                ),
-                Row(
-                  children: [
-                    Checkbox(
-                      fillColor: primaryMaterailColor,
-                      value: widget.negotiable,
-                      shape: const CircleBorder(),
-                      onChanged: (bool? value) => setState(() {
-                        widget.negotiable = value!;
-                      }),
-                    ),
-                    const CustomText(
-                      'Negotiable',
-                      color: kBlack40,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: height * 0.02),
-            const Divider(
-              height: 0.5,
-            ),
-            ClearTextField(
-              controller: widget.discriptionController,
-              label: kListingDescriptionLabel,
-            ),
-          ]),
+              ///title field
+              ClearTextField(
+                controller: widget.titleController,
+                label: kListingTitleLabel,
+              ),
+              const Divider(
+                height: 0.5,
+              ),
+              SizedBox(
+                height: height * .02,
+              ),
+              CustomDropdownButton(
+                defaultHint:
+                    widget.category == '' ? _defaultValue : widget.category,
+                listItems: kListingCategories,
+                verticalPadding: height * 0.03,
+                onChanged: (value) => _selectCategory(value!),
+              ),
+              const Divider(
+                height: 0.5,
+              ),
+              SizedBox(height: height * 0.02),
+              Row(
+                children: [
+                  ClearTextField(
+                    controller: widget.priceController,
+                    label: kPriceLabel,
+                    width: width * 0.6,
+                  ),
+                  Row(
+                    children: [
+                      Checkbox(
+                        fillColor: primaryMaterailColor,
+                        value: widget.negotiable,
+                        shape: const CircleBorder(),
+                        onChanged: (bool? value) => setState(() {
+                          widget.negotiable = value!;
+                        }),
+                      ),
+                      const CustomText(
+                        'Negotiable',
+                        color: kBlack40,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: height * 0.02),
+              const Divider(
+                height: 0.5,
+              ),
+              ClearTextField(
+                controller: widget.discriptionController,
+                label: kListingDescriptionLabel,
+              ),
+            ]),
+          ),
         ),
       ),
     );

@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import '../../../../../../../common_widgets/alert_dialogs.dart';
-import '../../../../../../../utils/delay.dart';
+import '../src/common_widgets/alert_dialogs.dart';
+import '../src/utils/delay.dart';
 
 class PhotoGalleryRepository {
   final int _sizePerPage = 50;
@@ -17,8 +17,11 @@ class PhotoGalleryRepository {
   ///gallery path
   AssetPathEntity? path;
 
+  List<AssetEntity> _imagePaths = [];
+  List<AssetEntity>? get imagePaths => _imagePaths;
+
   ///list of images extracted from gallery
-  List<AssetEntity>? _entities = [];
+  List<AssetEntity> _entities = [];
   List<AssetEntity>? get entities => _entities;
 
   bool isLoading = false;
@@ -72,12 +75,19 @@ class PhotoGalleryRepository {
     // Return if not paths found.
     if (paths.isEmpty) {
       print('path is empty');
-      isPathEmpty = true;
       isLoading = false;
+      isPathEmpty = true;
     }
 
     path = paths.first;
     print('path is not empty and path is => $path');
+
+    // for (var i = 0; i < path!.assetCount; i++) {
+    //   final path = paths[i];
+    //   final AssetEntity? imageEntityWithPath = await PhotoManager.editor
+    //       .saveImageWithPath(path.toString(), title: path.id);
+    //   imagePaths?.add(imageEntityWithPath!);
+    // }
 
     _totalEntitiesCount = path!.assetCount;
     print('total entities count is $_totalEntitiesCount');
@@ -96,14 +106,10 @@ class PhotoGalleryRepository {
 
     _entities = entities;
     isLoading = false;
-    hasMoreToLoad = _entities!.length < _totalEntitiesCount;
-
-    print('entities are => $entities');
-    print('entities transfered are $_entities');
-    print('is loading getter is $isLoading');
-    print('is _loading is $isLoading');
+    hasMoreToLoad = _entities.length < _totalEntitiesCount;
   }
 
+  ///implement this on pull refresh
   Future<void> loadMoreAsset() async {
     final List<AssetEntity> entities = await path!.getAssetListPaged(
       page: _page + 1,
@@ -113,10 +119,10 @@ class PhotoGalleryRepository {
     //   return;
     // }
 
-    _entities!.addAll(entities);
-    _entities!.insert(0, entities[1]);
+    _entities.addAll(entities);
+    _entities.insert(0, entities[1]);
     _page++;
-    hasMoreToLoad = _entities!.length < _totalEntitiesCount;
+    hasMoreToLoad = _entities.length < _totalEntitiesCount;
     isLoadingMore = false;
   }
 }
@@ -147,7 +153,7 @@ final imageListControllerProvider =
   return cameraController.entities;
 });
 
-final loadingProvider = StateProvider<bool>((ref) {
+final pathIsEmptyProvider = StateProvider<bool>((ref) {
   final cameraController = ref.watch(cameraControllerProvider);
-  return cameraController.isLoading;
+  return cameraController.isPathEmpty;
 });
