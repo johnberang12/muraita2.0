@@ -1,5 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
+
 import 'package:muraita_2_0/src/features/authentication/data/auth_repository.dart';
 
 import '../../../services/api_path.dart';
@@ -9,19 +11,25 @@ import '../domain/app_user.dart';
 abstract class UsersDatabase {
   Future<void> setUser(AppUser user);
   Future<void> deleteUser(AppUser user);
-  Future<void> updateDisplayName(String userId, String displayName);
-  Future<void> updatePhoneNumber(String userId, String phoneNumber);
-  Future<void> updateEmail(String userId, String email);
-  Future<void> updateEmailVerified(String userId, bool emailVerified);
-  Future<void> updatePhoto(String userId, String photoUrl);
-  Future<void> updateBirthDate(String userId, String birthDate);
-  Future<void> updateProvidedData(String userId, String providedData);
-  Future<void> updateSuccess(String userId, bool success);
+  Future<void> updateDisplayName(String displayName);
+  Future<void> updatePhoneNumber(String phoneNumber);
+  Future<void> updateEmail(String email);
+  Future<void> updateEmailVerified(bool emailVerified);
+  Future<void> updatePhoto(String photoUrl);
+  Future<void> updateBirthDate(String birthDate);
+  Future<void> updateProvidedData(String providedData);
+  Future<void> updateSuccess(bool success);
+  Stream<AppUser> watchUserInfo(String userId);
+  Stream<List<AppUser>> watchUsers();
 }
 
 class UsersRepository implements UsersDatabase {
+  UsersRepository({
+    required this.ref,
+  });
+  Ref ref;
+
   final _service = FirestoreService.instance;
-  final _auth = FirebaseAuthRepository();
 
   @override
   Future<void> setUser(AppUser user) => _service.setData(
@@ -29,52 +37,126 @@ class UsersRepository implements UsersDatabase {
         data: user.toMap(),
       );
 
+  Future<void> setUserIfExist(AppUser userData) async {
+    final user = ref.watch(authRepositoryProvider).currentUser;
+    final path = APIPath.user(user!.uid);
+    final reference = FirebaseFirestore.instance.doc(path);
+    print('set userdata');
+    reference.get().then((value) async {
+      if (!value.exists) {
+        await setUser(userData);
+      }
+    });
+  }
+
   @override
   Future<void> deleteUser(AppUser user) => _service.deleteData(
         path: APIPath.user(user.id),
       );
 
   @override
-  Future<void> updateBirthDate(String userId, String birthDate) =>
-      _service.updateUserData(uid: userId, birthDate: birthDate);
+  Future<void> updateBirthDate(String birthDate) {
+    final user = ref.watch(authRepositoryProvider).currentUser;
+    return _service.updateDoc(
+        path: APIPath.user(user!.uid), data: {'birthDate': birthDate});
+  }
 
   @override
-  Future<void> updateDisplayName(String userId, String displayName) =>
-      _service.updateUserData(uid: userId, displayName: displayName);
+  Future<void> updateDisplayName(String displayName) {
+    final user = ref.watch(authRepositoryProvider).currentUser;
+    return _service.updateDoc(
+        path: APIPath.user(user!.uid), data: {'displayName': displayName});
+  }
 
   @override
-  Future<void> updateEmail(String userId, String email) =>
-      _service.updateUserData(uid: userId, email: email);
+  Future<void> updateEmail(String email) {
+    final user = ref.watch(authRepositoryProvider).currentUser;
+    return _service
+        .updateDoc(path: APIPath.user(user!.uid), data: {'email': email});
+  }
 
   @override
-  Future<void> updateEmailVerified(String userId, bool emailVerified) =>
-      _service.updateUserData(uid: userId, emailVerified: emailVerified);
+  Future<void> updateEmailVerified(bool emailVerified) {
+    final user = ref.watch(authRepositoryProvider).currentUser;
+    return _service.updateDoc(
+        path: APIPath.user(user!.uid), data: {'emailVerified': emailVerified});
+  }
 
   @override
-  Future<void> updatePhoneNumber(String userId, String phoneNumber) =>
-      _service.updateUserData(uid: userId, phoneNumber: phoneNumber);
+  Future<void> updatePhoneNumber(String phoneNumber) {
+    final user = ref.watch(authRepositoryProvider).currentUser;
+    return _service.updateDoc(
+        path: APIPath.user(user!.uid), data: {'phoneNumber': phoneNumber});
+  }
 
   @override
-  Future<void> updatePhoto(String userId, String photoUrl) =>
-      _service.updateUserData(uid: userId, photoUrl: photoUrl);
+  Future<void> updatePhoto(String photoUrl) {
+    final user = ref.watch(authRepositoryProvider).currentUser;
+    return _service.updateDoc(
+      path: APIPath.user(user!.uid),
+      data: {'photoUrl': photoUrl},
+    );
+  }
 
   @override
-  Future<void> updateProvidedData(String userId, String providedData) =>
-      _service.updateUserData(uid: userId, providedData: providedData);
-  @override
-  Future<void> updateSuccess(String userId, bool success) =>
-      _service.updateUserData(uid: userId, success: success);
+  Future<void> updateProvidedData(String providedData) {
+    final user = ref.watch(authRepositoryProvider).currentUser;
+    return _service.updateDoc(
+        path: APIPath.user(user!.uid), data: {'providedData': providedData});
+  }
 
-  Stream<AppUser> watchUserInfo() => _service.documentStream<AppUser>(
-      path: APIPath.user(_auth.currentUser!.uid),
-      builder: (data, userId) => AppUser.fromMap(data, userId));
+  @override
+  Future<void> updateSuccess(bool success) {
+    final user = ref.watch(authRepositoryProvider).currentUser;
+    return _service
+        .updateDoc(path: APIPath.user(user!.uid), data: {'success': success});
+  }
+
+  Future<void> updateUserLastActive(String userId) async {
+    final user = ref.watch(authRepositoryProvider).currentUser;
+    return _service.updateDoc(
+        path: APIPath.user(user!.uid),
+        data: {'lastActive': DateTime.now().toUtc()});
+  }
+
+  @override
+  Stream<AppUser> watchUserInfo(String userId) {
+    return _service.documentStream<AppUser>(
+        path: APIPath.user(userId),
+        builder: (data, documentId) => AppUser.fromMap(data, documentId));
+  }
+
+  Stream<AppUser> watchProductOwner(String ownerId) {
+    return _service.documentStream<AppUser>(
+        path: APIPath.user(ownerId),
+        builder: (data, documentId) => AppUser.fromMap(data, documentId));
+  }
+
+  @override
+  Stream<List<AppUser>> watchUsers() => _service.collectionStream<AppUser>(
+        path: APIPath.users(),
+        builder: (data, documentId) => AppUser.fromMap(data, documentId),
+      );
 }
 
 final userRepositoryProvider = Provider<UsersRepository>((ref) {
-  return UsersRepository();
+  return UsersRepository(ref: ref);
 });
 
-final userInfoProvider = StreamProvider<AppUser?>((ref) {
+final appUserInfoProvider = StreamProvider<AppUser?>((ref) {
   final repository = ref.watch(userRepositoryProvider);
-  return repository.watchUserInfo();
+  final user = ref.watch(authRepositoryProvider).currentUser;
+  return repository.watchUserInfo(user!.uid);
+});
+
+final usersListStreamProvider =
+    StreamProvider.autoDispose<List<AppUser>>((ref) {
+  final repository = ref.watch(userRepositoryProvider);
+  return repository.watchUsers();
+});
+
+final sellerInfoProvider =
+    StreamProvider.family<AppUser, String>((ref, sellerId) {
+  final repository = ref.watch(userRepositoryProvider);
+  return repository.watchProductOwner(sellerId);
 });

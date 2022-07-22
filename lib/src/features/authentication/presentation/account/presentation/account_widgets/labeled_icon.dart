@@ -8,6 +8,7 @@ class LabeledIcon extends StatelessWidget {
   const LabeledIcon({
     Key? key,
     required this.icon,
+    required this.onTap,
     this.iconSize = Sizes.p24,
     required this.label,
     this.labelFontSize = Sizes.p14,
@@ -18,6 +19,7 @@ class LabeledIcon extends StatelessWidget {
   final String label;
   final double labelFontSize;
   final double avatarRadius;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -26,17 +28,15 @@ class LabeledIcon extends StatelessWidget {
       children: [
         InkWell(
           borderRadius: BorderRadius.circular(100),
-          highlightColor: kPrimaryHue,
-          onTap: () {
-            print('tapped');
-          },
+          highlightColor: AppColors.primaryHue,
+          onTap: onTap,
           child: CircleAvatar(
-            backgroundColor: kPrimaryTint40,
+            backgroundColor: AppColors.primaryTint40,
             radius: avatarRadius,
             child: Icon(
               icon,
               size: iconSize,
-              color: kPrimaryShade60,
+              color: AppColors.primaryShade60,
             ),
           ),
         ),

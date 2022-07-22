@@ -5,7 +5,6 @@ import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
 
 import '../constants/app_sizes.dart';
 import '../routing/app_router.dart';
-import '../routing/goRouter/route_utils.dart';
 
 /// Placeholder widget showing a message and CTA to go back to the home screen.
 class EmptyPlaceholderWidget extends StatelessWidget {

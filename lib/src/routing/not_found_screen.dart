@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
+
 import '../common_widgets/empty_placeholder_widget.dart';
 
 /// Simple not found screen used for 404 errors (page not found on web)
@@ -10,7 +10,7 @@ class NotFoundScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('404 - Page not found!'),
+        title: const Text('404 - Page not found!'),
       ),
       body: EmptyPlaceholderWidget(
         message: errorMessage,

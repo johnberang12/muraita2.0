@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:muraita_2_0/src/features/authentication/data/auth_repository.dart';
 import 'package:muraita_2_0/src/utils/async_value_ui.dart';
 import '../../../../../../common_widgets/alert_dialogs.dart';
 import '../../../../../../constants/app_sizes.dart';
@@ -20,8 +21,6 @@ class SettingsList extends ConsumerWidget {
     );
     if (logout == true) {
       await ref.read(accountScreenControllerProvider.notifier).signOut();
-
-      context.goNamed(AppRoute.welcome.name);
     }
   }
 
@@ -43,14 +42,17 @@ class SettingsList extends ConsumerWidget {
                 labelFontSize: height * .02,
                 icon: Icons.settings,
                 label: 'General settings',
-                onTap: () {},
+                onTap: () => context.pushNamed(AppRoute.settings.name),
               ),
               _SettingsTableRow(
                 iconSize: height * .025,
                 labelFontSize: height * .02,
                 icon: Icons.settings,
                 label: 'General settings',
-                onTap: () {},
+                onTap: () {
+                  final user = ref.watch(authRepositoryProvider).currentUser;
+                  print(user?.photoURL);
+                },
               ),
               _SettingsTableRow(
                 iconSize: height * .025,

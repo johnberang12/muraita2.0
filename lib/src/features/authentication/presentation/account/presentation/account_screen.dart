@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:muraita_2_0/src/constants/app_colors.dart';
+
 import 'package:muraita_2_0/src/features/authentication/presentation/account/presentation/account_widgets/favorites.dart';
 import 'package:muraita_2_0/src/features/authentication/presentation/account/presentation/account_widgets/settings_list.dart';
 import 'package:muraita_2_0/src/features/authentication/presentation/account/presentation/account_widgets/social_media.dart';
-import 'package:muraita_2_0/src/features/authentication/presentation/account/presentation/account_widgets/user_info_stream.dart';
+import 'package:muraita_2_0/src/features/authentication/presentation/account/presentation/account_widgets/user_info_widget.dart';
+
 import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
 import 'package:muraita_2_0/src/utils/async_value_ui.dart';
 import '../../../../../common_widgets/action_text_button.dart';
-import '../../../../../common_widgets/alert_dialogs.dart';
-import '../../../../../common_widgets/custom_app_bar.dart';
+
 import '../../../../../common_widgets/custom_body.dart';
 import '../../../../../common_widgets/responsive_center.dart';
 import '../../../../../constants/app_sizes.dart';
 import '../../../../../routing/app_router.dart';
 import 'account_screen_controller.dart';
-import 'account_widgets/user_data.dart';
+
 import 'package:go_router/go_router.dart';
 
 /// Simple account screen showing some user info and a logout button.
@@ -28,7 +28,7 @@ class AccountScreen extends ConsumerWidget {
       accountScreenControllerProvider,
       (_, state) => state.showAlertDialogOnError(context),
     );
-    final state = ref.watch(accountScreenControllerProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -36,9 +36,8 @@ class AccountScreen extends ConsumerWidget {
         ),
         actions: [
           ActionTextButton(
-            text: 'Edit profile',
-            onPressed: () => context.pushNamed(AppRoute.editprofile.name),
-          ),
+              text: 'Edit profile',
+              onPressed: () => context.pushNamed(AppRoute.editprofile.name)),
         ],
       ),
       body: CustomBody(
@@ -54,7 +53,7 @@ class AccountScreen extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: Sizes.p16),
                     child: Column(
                       children: const [
-                        Expanded(flex: 20, child: UserInfoStream()),
+                        Expanded(flex: 20, child: UserInfoWidget()),
                         Divider(
                           height: 20,
                         ),

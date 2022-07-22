@@ -1,86 +1,64 @@
-import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:muraita_2_0/src/common_widgets/async_value_widget.dart';
 
-import 'files_screen.dart';
+import '../../common_widgets/custom_list_tile.dart';
+import '../../common_widgets/grid_layout.dart';
+import '../../common_widgets/responsive_center.dart';
+import '../products/data/products_repository.dart';
+import '../products/domain/product.dart';
+import '../products/presentation/all_products_list/products_list_view.dart';
+import 'combined_chat_product_AppUser.dart';
 
-
-class NeighborhoodScreen extends StatefulWidget {
-   NeighborhoodScreen({Key? key}) : super(key: key);
-
-
-  @override
-  State<NeighborhoodScreen> createState() => _NeighborhoodScreenState();
-}
-
-class _NeighborhoodScreenState extends State<NeighborhoodScreen> {
-  List<File>? _pickedImages;
-  bool _isLoading = false;
-
-
-
-  Future<void> _pickImage() async {
-    print('getting results...');
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
-      type: FileType.image,
-     withReadStream: true,
-      // allowedExtensions: ['jpg', 'pdf', 'doc'],
-    );
-    if(result == null ) return;
-    print('results are $result');
-
-    final file = result.files.first;
-    // openFile(file);
-    print('name: ${file.name}');
-    print('bytes: ${file.bytes}');
-    print('extension: ${file.extension}');
-    print('path: ${file.path}');
-
-    List<File> files = result.paths.map((path) => File(path!)).toList();
-    setState(() {
-      _pickedImages = files;
-
-    });
-
-    openFiles(result.files);
-
-    final newFile = await saveFilePermanently(file);
-
-
-
-
-      // User canceled the picker
-
-
-
-  }
-
-  void openFiles(List<PlatformFile> files) => Navigator.of(context).push(MaterialPageRoute(builder: (context) => FilesScreen(
-    files: files,
-
-  )));
-
-  Future<File> saveFilePermanently(PlatformFile file) async {
-    final appStorage = await getApplicationDocumentsDirectory();
-    final newFile = File('${appStorage.path}/${file.name}');
-    return File(file.path!).copy(newFile.path);
-  }
-
-
+class NeighborhoodScreen extends StatelessWidget {
+  NeighborhoodScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body:  Center(
-        child: ElevatedButton(
-            onPressed: ()=> _pickImage(),
-            child: Text('pick image')),
-      ),
-    );
+        appBar: AppBar(),
+        body: CustomScrollView(
+          slivers: [
+            ResponsiveSliverCenter(child: UsersListView()),
+          ],
+        ));
+  }
+}
+
+class UsersListView extends ConsumerWidget {
+  UsersListView({Key? key}) : super(key: key);
+
+  final String ownerId = 'NVQYDfmZ4HTCkvldXLZepm6PJdp1';
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final listValue = ref.watch(productsListStreamProvider);
+    return SizedBox();
+
+    // AsyncValueWidget<List<Product>>(
+    //     value: listValue,
+    //     data: (products) {
+    //       final product = products[0];
+    //       final productUserValue =
+    //           ref.watch(productChatsStreamProvider(product));
+    //       return AsyncValueWidget<List<UserProduct>>(
+    //         value: productUserValue,
+    //         data: (productUsers) => GridLayout(
+    //           rowsCount: 1,
+    //           itemCount: productUsers.length,
+    //           itemBuilder: (_, index) {
+    //             final item = productUsers[index];
+    //             return CustomListTile(
+    //               thumbnail: CircleAvatar(
+    //                   child: CachedNetworkImage(
+    //                 imageUrl: item.userPhotoUrl,
+    //               )),
+    //               title: Text(item.productTitle),
+    //               location: Text(item.userLocation),
+    //             );
+    //           },
+    //         ),
+    //       );
+    //     });
   }
 }

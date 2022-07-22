@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
 
 import '../../../../common_widgets/custom_text_button.dart';
 import '../../../../common_widgets/responsive_two_column_layout.dart';
 import '../../../../constants/app_sizes.dart';
-import '../../../../routing/app_router.dart';
-import '../../../../utils/date_formatter.dart';
 
 /// Simple widget to show the product purchase date along with a button to
 /// leave a review.

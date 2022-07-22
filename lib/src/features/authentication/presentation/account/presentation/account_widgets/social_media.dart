@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:muraita_2_0/src/constants/app_colors.dart';
-import 'package:muraita_2_0/src/constants/app_sizes.dart';
+import 'package:muraita_2_0/src/common_widgets/alert_dialogs.dart';
 
-import '../../../../../../common_widgets/custom_text.dart';
 import '../../../../../../constants/styles.dart';
 import 'labeled_icon.dart';
 
@@ -25,6 +23,8 @@ class SocialMedia extends ConsumerWidget {
           children: [
             LabeledIcon(
               icon: (Icons.facebook),
+              onTap: () =>
+                  showAlertDialog(context: context, title: 'UnImplemented'),
               label: 'facebook',
               iconSize: height * .025,
               avatarRadius: height * .025,
@@ -32,6 +32,8 @@ class SocialMedia extends ConsumerWidget {
             ),
             LabeledIcon(
               icon: (Icons.camera_alt_outlined),
+              onTap: () =>
+                  showAlertDialog(context: context, title: 'UnImplemented'),
               label: 'instagram',
               iconSize: height * .025,
               avatarRadius: height * .025,
@@ -39,6 +41,8 @@ class SocialMedia extends ConsumerWidget {
             ),
             LabeledIcon(
               icon: (Icons.access_alarm_outlined),
+              onTap: () =>
+                  showAlertDialog(context: context, title: 'UnImplemented'),
               label: 'twitter',
               iconSize: height * .025,
               avatarRadius: height * .025,

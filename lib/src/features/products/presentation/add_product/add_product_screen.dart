@@ -1,76 +1,39 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muraita_2_0/src/common_widgets/alert_dialogs.dart';
+import 'package:muraita_2_0/src/features/authentication/data/auth_repository.dart';
+import 'package:muraita_2_0/src/features/authentication/presentation/account/presentation/edit_profile/data/fire_storage_repository.dart';
+import 'package:muraita_2_0/src/features/authentication/presentation/account/presentation/edit_profile/presentation/edit_profile_screen_controller.dart';
+import 'package:muraita_2_0/src/services/api_path.dart';
 import '../../../../common_widgets/clear_text_field.dart';
 import '../../../../common_widgets/custom_body.dart';
 import '../../../../common_widgets/custom_dropdown_button.dart';
-import '../../../../common_widgets/custom_image_input.dart';
+import '../../../../common_widgets/image_display_tab.dart';
 import '../../../../common_widgets/custom_text.dart';
 import '../../../../constants/app_colors.dart';
-import '../../../../constants/app_sizes.dart';
+
 import '../../../../constants/strings.dart';
 import '../../data/products_repository.dart';
 import '../../domain/product.dart';
+import 'add_product_camera_controller.dart';
+import 'add_product_screen_controller.dart';
 
 String documentIdFromCurrentDate() => DateTime.now().toIso8601String();
+DateTime currentDateTime() => DateTime.now().toUtc();
 
-class AddProductScreen extends StatelessWidget {
-  AddProductScreen({Key? key}) : super(key: key);
-  final _formKey = GlobalKey<FormState>();
-  final _productTitleController = TextEditingController();
-  final _productDescriptionController = TextEditingController();
-  final _productPriceController = TextEditingController();
+class AddProductScreen extends ConsumerWidget {
+  const AddProductScreen({Key? key}) : super(key: key);
 
-  String get productTitle => _productTitleController.text;
-  String get productDescription => _productDescriptionController.text;
-  String get productPrice => _productPriceController.text;
-
-  final String _selectedCategory = kEmptyString;
-
-  final bool _negotiable = false;
-
-  final auth = FirebaseAuth.instance;
-  final database = ProductsRepository();
-
-  bool _validateAndSaveForm() {
-    final form = _formKey.currentState;
-    if (form!.validate()) {
-      form.save();
-      return true;
-    }
-    return false;
-  }
-
-  Future<void> _submitForm(context) async {
-    if (_validateAndSaveForm()) {
-      try {
-        final id = documentIdFromCurrentDate();
-        final listing = Product(
-          id: id,
-          title: productTitle,
-          category: _selectedCategory,
-          price: int.tryParse(productPrice)!,
-          description: productDescription,
-          negotiable: _negotiable,
-          ownerId: auth.currentUser!.uid,
-          avgRating: 0,
-          numRatings: 0,
-          success: true,
-        );
-
-        await database.setProduct(listing);
-        Navigator.of(context).pop();
-      } catch (e) {
-        showAlertDialog(
-            context: context, title: kOperationFailed, content: e.toString());
-      }
-    }
-  }
+  ///to be supplied with location from api
 
   @override
-  Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final height = MediaQuery.of(context).size.height;
+    // final width = MediaQuery.of(context).size.width;
+    final controller = ref.watch(addProductScreenControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: const CustomText(
@@ -82,61 +45,46 @@ class AddProductScreen extends StatelessWidget {
               child: const Text(
                 kDone,
               ),
-              onPressed: () => _submitForm(context)),
+              onPressed: () => controller.submitForm(context, ref)),
         ],
       ),
-      body: _BuidContents(
-        formKey: _formKey,
-        titleController: _productTitleController,
-        discriptionController: _productDescriptionController,
-        priceController: _productPriceController,
-        category: _selectedCategory,
-        negotiable: _negotiable,
-      ),
+      body: const _BuidContents(
+          // formKey: _formKey,
+          // titleController: _productTitleController,
+          // discriptionController: _productDescriptionController,
+          // priceController: _productPriceController,
+          ),
     );
   }
 }
 
-class _BuidContents extends StatefulWidget {
-  _BuidContents({
-    super.key,
-    required this.formKey,
-    required this.titleController,
-    required this.discriptionController,
-    required this.priceController,
-    this.category = kEmptyString,
-    this.negotiable = false,
-  });
-  final GlobalKey formKey;
-  final TextEditingController titleController;
-  final TextEditingController discriptionController;
-  final TextEditingController priceController;
-  String category;
-  bool negotiable;
+class _BuidContents extends ConsumerWidget {
+  const _BuidContents(
+      // required this.formKey,
+      // required this.titleController,
+      // required this.discriptionController,
+      // required this.priceController,
+      );
+  // final GlobalKey formKey;
+  // final TextEditingController titleController;
+  // final TextEditingController discriptionController;
+  // final TextEditingController priceController;
 
-  @override
-  State<_BuidContents> createState() => _BuidContentsState();
-}
-
-class _BuidContentsState extends State<_BuidContents> {
   final String _defaultValue = 'Choose Category';
 
-  _selectCategory(String value) {
-    setState(() {
-      widget.category = value;
-    });
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    final selectedCategory = ref.watch(productCategoryProvider.state).state;
+    final controller = ref.watch(addProductScreenControllerProvider);
+    final isSubmitted = ref.watch(isProductSubmittedProvider.state).state;
 
     return CustomBody(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: width * 0.03),
         child: Form(
-          key: widget.formKey,
+          key: controller.formKey,
           child: SingleChildScrollView(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -144,7 +92,7 @@ class _BuidContentsState extends State<_BuidContents> {
 
               ///comment this image for the sake of setting up save data function
 
-              const CustomImageInput(),
+              const ImageDisplayTab(),
               const Divider(
                 height: 0.5,
               ),
@@ -152,8 +100,12 @@ class _BuidContentsState extends State<_BuidContents> {
 
               ///title field
               ClearTextField(
-                controller: widget.titleController,
+                controller: controller.productTitleController,
                 label: kListingTitleLabel,
+                autovalidateMode: AutovalidateMode.always,
+                validator: (title) => !isSubmitted
+                    ? null
+                    : controller.titleErrorText(title ?? ''),
               ),
               const Divider(
                 height: 0.5,
@@ -163,10 +115,11 @@ class _BuidContentsState extends State<_BuidContents> {
               ),
               CustomDropdownButton(
                 defaultHint:
-                    widget.category == '' ? _defaultValue : widget.category,
+                    selectedCategory == '' ? _defaultValue : selectedCategory,
                 listItems: kListingCategories,
                 verticalPadding: height * 0.03,
-                onChanged: (value) => _selectCategory(value!),
+                onChanged: (value) =>
+                    ref.read(productCategoryProvider.state).state = value!,
               ),
               const Divider(
                 height: 0.5,
@@ -175,23 +128,27 @@ class _BuidContentsState extends State<_BuidContents> {
               Row(
                 children: [
                   ClearTextField(
-                    controller: widget.priceController,
-                    label: kPriceLabel,
-                    width: width * 0.6,
-                  ),
+                      controller: controller.productPriceController,
+                      label: kPriceLabel,
+                      width: width * 0.6,
+                      keyboardType: TextInputType.number,
+                      autovalidateMode: AutovalidateMode.always,
+                      validator: (price) => !isSubmitted
+                          ? null
+                          : controller.priceErrorText(price ?? '')),
                   Row(
                     children: [
                       Checkbox(
-                        fillColor: primaryMaterailColor,
-                        value: widget.negotiable,
-                        shape: const CircleBorder(),
-                        onChanged: (bool? value) => setState(() {
-                          widget.negotiable = value!;
-                        }),
-                      ),
+                          fillColor: primaryMaterailColor,
+                          value:
+                              ref.watch(negotiableToggleProvider.state).state,
+                          shape: const CircleBorder(),
+                          onChanged: (bool? value) => ref
+                              .read(negotiableToggleProvider.state)
+                              .state = value!),
                       const CustomText(
                         'Negotiable',
-                        color: kBlack40,
+                        color: AppColors.black40,
                       ),
                     ],
                   ),
@@ -202,8 +159,12 @@ class _BuidContentsState extends State<_BuidContents> {
                 height: 0.5,
               ),
               ClearTextField(
-                controller: widget.discriptionController,
+                controller: controller.productDescriptionController,
                 label: kListingDescriptionLabel,
+                autovalidateMode: AutovalidateMode.always,
+                validator: (description) => !isSubmitted
+                    ? null
+                    : controller.descriptionErrorText(description!),
               ),
             ]),
           ),

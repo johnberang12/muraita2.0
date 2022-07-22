@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../constants/app_sizes.dart';
-
 /// Custom image widget that loads an image as a static asset.
 class ListTileImage extends StatelessWidget {
   const ListTileImage({super.key, required this.imageUrl});

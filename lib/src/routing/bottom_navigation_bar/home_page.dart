@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:muraita_2_0/src/routing/bottom_navigation_bar/tab_item.dart';
 import '../../features/authentication/presentation/account/presentation/account_screen.dart';
-import '../../features/chats/presentation/chats_list_screen.dart';
+import '../../features/chats/presentation/chat_list/chats_list_screen.dart';
 import '../../features/neighbors/neighborhood_screen.dart';
 
-import '../../features/products/presentation/product_screen/product_screen.dart';
-import '../../features/products/presentation/products_list/products_list_screen.dart';
+import '../../features/products/presentation/all_products_list/products_list_screen.dart';
+
 import 'cupertino_home_scaffold.dart';
 
 class HomePage extends StatefulWidget {
@@ -28,8 +28,8 @@ class _HomePageState extends State<HomePage> {
   Map<TabItem, WidgetBuilder> get widgetBuilders {
     return {
       TabItem.home: (_) => const ProductsListScreen(),
-      TabItem.neighborhood: (_) =>  NeighborhoodScreen(),
-      TabItem.chats: (_) => const ChatsListScreen(),
+      TabItem.neighborhood: (_) => NeighborhoodScreen(),
+      TabItem.chats: (_) => ChatsListScreen(),
       TabItem.account: (_) => const AccountScreen(),
     };
   }

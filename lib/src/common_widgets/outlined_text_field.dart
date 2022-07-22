@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../constants/app_colors.dart';
+import '../constants/styles.dart';
+
 class OutlinedTextField extends StatelessWidget {
   const OutlinedTextField({
     Key? key,
@@ -9,6 +12,7 @@ class OutlinedTextField extends StatelessWidget {
     this.height = 64,
     this.width = double.infinity,
     this.autofocus = false,
+    this.prefix = const SizedBox(),
     this.labelText,
     this.hintText,
     this.enabled = true,
@@ -19,6 +23,8 @@ class OutlinedTextField extends StatelessWidget {
     this.inputFormatters,
     this.onChange,
     this.maxLength,
+    this.textColor = Colors.white,
+    this.fillColor = AppColors.primaryShade60,
   }) : super(key: key);
 
   final double height;
@@ -26,6 +32,7 @@ class OutlinedTextField extends StatelessWidget {
   final String? initialValue;
   final TextEditingController? controller;
   final bool autofocus;
+  final Widget prefix;
   final String? labelText;
   final String? hintText;
   final bool? enabled;
@@ -36,6 +43,8 @@ class OutlinedTextField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   final void Function(String)? onChange;
   final int? maxLength;
+  final Color textColor;
+  final Color fillColor;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +56,14 @@ class OutlinedTextField extends StatelessWidget {
         initialValue: initialValue,
         controller: controller,
         autofocus: autofocus,
+        cursorColor: Colors.white,
+        style: Styles.k16.copyWith(color: textColor),
         decoration: InputDecoration(
+            labelStyle: Styles.k16.copyWith(color: textColor),
+            hintStyle: Styles.k16.copyWith(color: textColor),
+            fillColor: fillColor,
+            filled: true,
+            prefixIcon: prefix,
             border: const OutlineInputBorder(),
             labelText: labelText,
             hintText: hintText,

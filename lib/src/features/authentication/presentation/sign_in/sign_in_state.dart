@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muraita_2_0/src/constants/strings.dart';
 import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/string_validators.dart';
-import '../../../../common_widgets/custom_text_box.dart';
 
 ///copied
-enum SignInFormType { register, otpVerification }
+enum SignInFormType {
+  register,
+  otpVerification,
+}
 
 mixin NameAndPhoneNumberValidators {
   final StringValidator nameSubmitValidator = MinLengthStringValidator(4);
@@ -61,14 +62,6 @@ extension SignInStateX on SignInState {
     }
   }
 
-  String get inputHintText {
-    if (formType == SignInFormType.register) {
-      return kPhoneNumberInputHint;
-    } else {
-      return kOtpInputHint;
-    }
-  }
-
   ///Getters
   String get primaryButtonText {
     if (formType == SignInFormType.register) {
@@ -102,13 +95,13 @@ extension SignInStateX on SignInState {
   //   }
   // }
 
-  String get title {
-    if (formType == SignInFormType.register) {
-      return kRegistrationTitle;
-    } else {
-      return kOtpVerificationTitle;
-    }
-  }
+  // String get title {
+  //   if (formType == SignInFormType.register) {
+  //     return kRegistrationTitle;
+  //   } else {
+  //     return kOtpVerificationTitle;
+  //   }
+  // }
 
   String get registrationGuideText {
     if (formType == SignInFormType.register) {
@@ -126,9 +119,9 @@ extension SignInStateX on SignInState {
     return phoneNumberSubmitValidator.isValid(number);
   }
 
-  bool canSubmitOtp(String otp) {
-    return otpSubmitValidator.isValid(otp);
-  }
+  // bool canSubmitOtp(String otp) {
+  //   return otpSubmitValidator.isValid(otp);
+  // }
 
   String? nameErrorTExt(String name) {
     final bool showErrorText = !canSubmitName(name);
@@ -143,11 +136,11 @@ extension SignInStateX on SignInState {
     return showErrorText ? errorText : null;
   }
 
-  String? otpErrorText(String otp) {
-    final bool showErrorText = !canSubmitOtp(otp);
-    final String errorText = otp.length <= 5 || otp.length > 6
-        ? kInvalidOtpFormat
-        : kInvalidOtpFormat;
-    return showErrorText ? errorText : null;
-  }
+  // String? otpErrorText(String otp) {
+  //   final bool showErrorText = !canSubmitOtp(otp);
+  //   final String errorText = otp.length <= 5 || otp.length > 6
+  //       ? kInvalidOtpFormat
+  //       : kInvalidOtpFormat;
+  //   return showErrorText ? errorText : null;
+  // }
 }

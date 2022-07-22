@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muraita_2_0/src/common_widgets/async_value_widget.dart';
 import 'package:muraita_2_0/src/constants/styles.dart';
+import 'package:muraita_2_0/src/features/authentication/presentation/account/presentation/account_screen.dart';
 
 import '../../../../../../common_widgets/grid_layout.dart';
 import '../../../../../../constants/app_sizes.dart';
-import '../data/search_product_repository.dart';
-import '../domain/search.dart';
-import 'dart:developer' as dev;
+import '../data/local/sql_search_repository.dart';
+
+// import 'dart:developer' as dev;
 
 /// A widget that displays the list of products that match the search query.
 class SearchGrid extends ConsumerStatefulWidget {
@@ -30,45 +31,48 @@ class _SearchGridState extends ConsumerState<SearchGrid> {
   Widget build(BuildContext context) {
     final controller = ref.watch(searchRepositoryProvider);
     final AsyncValue<List> searchList = ref.watch(searchListFutureProvider);
+    // final searches = ref.watch(searchListFutureProvider);
 
     return AsyncValueWidget<List>(
         value: searchList,
-        data: (searches) => GridLayout(
-              rowsCount: 2,
-              itemCount: searches.length,
-              itemBuilder: (_, index) {
-                final search = searches[index];
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      flex: 9,
-                      child: InkWell(
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(vertical: Sizes.p8),
-                          child: Text(
-                            search.title,
-                            style: kProductTitleSyle,
+        data: (searches) => searches.length > 1
+            ? GridLayout(
+                rowsCount: 2,
+                itemCount: searches.length,
+                itemBuilder: (_, index) {
+                  final search = searches[index];
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        flex: 9,
+                        child: InkWell(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(vertical: Sizes.p8),
+                            child: Text(
+                              search.title,
+                              style: kProductTitleSyle,
+                            ),
                           ),
+                          onTap: () => controller.searchItem(search.title),
                         ),
-                        onTap: () => controller.searchItem(search.title),
                       ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: InkWell(
-                        child: const Icon(
-                          Icons.close,
-                          size: Sizes.p12,
+                      Expanded(
+                        flex: 1,
+                        child: InkWell(
+                          child: const Icon(
+                            Icons.close,
+                            size: Sizes.p12,
+                          ),
+                          onTap: () => _onDeleteItem(context, ref, search.id),
                         ),
-                        onTap: () => _onDeleteItem(context, ref, search.id),
                       ),
-                    ),
-                  ],
-                );
-              },
-            ));
+                    ],
+                  );
+                },
+              )
+            : const Center(child: Text('Search item')));
   }
 }

@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:muraita_2_0/src/constants/app_sizes.dart';
 import 'package:muraita_2_0/src/features/authentication/data/auth_repository.dart';
 import 'package:muraita_2_0/src/features/products/presentation/home_app_bar/shopping_cart_icon.dart';
-import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
+
 import '../../../../constants/app_sizes.dart';
 import '../../../../routing/app_router.dart';
 

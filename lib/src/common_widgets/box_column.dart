@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muraita_2_0/src/constants/app_colors.dart';
 
 import '../constants/app_sizes.dart';
 
@@ -18,7 +19,7 @@ class BoxColumn extends StatelessWidget {
     return Center(
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.primaryHue,
           borderRadius: BorderRadius.circular(Sizes.p8),
         ),
         child: Padding(

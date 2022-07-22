@@ -9,7 +9,7 @@ class CustomTextBox extends StatelessWidget {
     this.align = TextAlign.center,
     this.fontSize = 15,
     this.fontWeight = FontWeight.w500,
-    this.color = kBlack80,
+    this.color = AppColors.black80,
     this.borderRadius = Sizes.p8,
     this.textPadding = Sizes.p8,
   }) : super(key: key);
@@ -26,7 +26,7 @@ class CustomTextBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.primaryHue,
         borderRadius: BorderRadius.circular(borderRadius!),
       ),
       child: Padding(

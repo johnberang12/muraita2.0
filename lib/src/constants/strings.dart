@@ -71,6 +71,8 @@ const kOtpMessageGuide = 'Please enter the otp code sent to your phone number';
 const kInvalidNumberFormat = 'Invalid phone number format';
 const kInvalidOtpFormat = 'Invalid code format';
 
+const kUserLocation = 'Wangal';
+
 const kNumberMaxLength = 10;
 
 ///add listing screen
@@ -99,3 +101,20 @@ const List<String> kCountryCodes = [
   '+82',
   '+1',
 ];
+
+///add product screen
+const kmaxImageCount = 10;
+const List<String> kProductStatus = [
+  'All',
+  'Active',
+  'Reserved',
+  'Sold',
+];
+
+///accountPage
+const kDefaultUserProfile = 'assets/default_profile_image.jpeg';
+
+///productItems list screen
+
+///chat screen
+const kDeleteConversation = 'Delete conversation';

@@ -14,9 +14,9 @@ class AppIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: avatarSize,
-      backgroundColor: kPrimaryHue,
+      backgroundColor: AppColors.primaryHue,
       child: Image.asset(
-        'assets/icon_logo.png',
+        'assets/app_icon_foreground.png',
         fit: BoxFit.cover,
       ),
     );

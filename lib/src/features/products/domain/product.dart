@@ -1,5 +1,12 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:muraita_2_0/src/constants/strings.dart';
+
+import 'package:muraita_2_0/src/features/products/data/products_repository.dart';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:io';
 
 // typedef ProductID = String;
 
@@ -8,64 +15,74 @@ import 'dart:io';
 class Product {
   Product({
     required this.id,
-    this.title,
-    this.photo,
-    this.category,
-    this.price,
-    this.description,
-    this.negotiable,
+    required this.title,
+    required this.photos,
+    required this.category,
+    required this.price,
+    required this.description,
+    required this.location,
+    this.negotiable = false,
     required this.ownerId,
-    this.avgRating = 0,
-    this.numRatings = 0,
+    this.followCount = 0,
+    this.messageCount = 0,
+    this.status = 'Active',
     this.success = true,
   });
   final String id;
-  final String? title;
-  final String? photo;
-  final String? category;
-  final int? price;
+  final String title;
+  final List photos;
+  final String category;
+  final int price;
   final String? description;
+  final String location;
   final bool? negotiable;
   final String ownerId;
-  final int avgRating;
-  final int numRatings;
+  final int followCount;
+  int messageCount;
+  final String status;
   final bool success;
 
-  factory Product.fromMap(Map<String, dynamic> map, String documentId) {
-    return Product(
-      id: map['id'],
-      title: map['title'],
-      photo: map['photo'],
-      category: map['category'],
-      price: map['price'],
-      description: map['description'],
-      negotiable: map['negotiable'],
-      ownerId: map['ownerId'],
-      avgRating: map['avgRating'],
-      numRatings: map['numRatings'],
-      success: map['success'],
-    );
-  }
-
   Map<String, dynamic> toMap() {
-    return {
+    return <String, dynamic>{
       'id': id,
       'title': title,
-      'photo': photo,
+      'photos': photos,
       'category': category,
       'price': price,
       'description': description,
+      'location': location,
       'negotiable': negotiable,
       'ownerId': ownerId,
-      'avgRating': avgRating,
-      'numRatings': numRatings,
+      'followCount': followCount,
+      'messageCount': messageCount,
+      'status': status,
       'success': success,
     };
   }
 
+  factory Product.fromMap(Map<String, dynamic> map, String productId) {
+    return Product(
+      id: map['id'] as String,
+      title: map['title'] as String,
+      photos: List.from((map['photos'] as List)),
+      category: map['category'] as String,
+      price: map['price'] as int,
+      description: map['description'] as String,
+      negotiable: map['negotiable'] != null ? map['negotiable'] as bool : null,
+      location: map['location'] as String,
+      ownerId: map['ownerId'] as String,
+      followCount: map['followCount'] as int,
+      messageCount: map['messageCount'] as int,
+      status: map['status'] as String,
+      success: map['success'] as bool,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
   @override
   String toString() {
-    return 'Product(id: $id, title: $title, photo: $photo, category: $category, price: $price, description: $description, negotiable: $negotiable, ownerId: $ownerId, avgRating: $avgRating, numRatings: $numRatings, success: $success)';
+    return 'Product(id: $id, title: $title, photos: $photos, category: $category, price: $price, description: $description, location: $location, negotiable: $negotiable, ownerId: $ownerId, followCount: $followCount, messageCount: $messageCount, status: $status, success: $success)';
   }
 
   @override
@@ -75,14 +92,16 @@ class Product {
     return other is Product &&
         other.id == id &&
         other.title == title &&
-        other.photo == photo &&
+        listEquals(other.photos, photos) &&
         other.category == category &&
         other.price == price &&
         other.description == description &&
+        other.location == location &&
         other.negotiable == negotiable &&
         other.ownerId == ownerId &&
-        other.avgRating == avgRating &&
-        other.numRatings == numRatings &&
+        other.followCount == followCount &&
+        other.messageCount == messageCount &&
+        other.status == status &&
         other.success == success;
   }
 
@@ -90,42 +109,51 @@ class Product {
   int get hashCode {
     return id.hashCode ^
         title.hashCode ^
-        photo.hashCode ^
+        photos.hashCode ^
         category.hashCode ^
         price.hashCode ^
         description.hashCode ^
+        location.hashCode ^
         negotiable.hashCode ^
         ownerId.hashCode ^
-        avgRating.hashCode ^
-        numRatings.hashCode ^
+        followCount.hashCode ^
+        messageCount.hashCode ^
+        status.hashCode ^
         success.hashCode;
   }
 
   Product copyWith({
     String? id,
     String? title,
-    String? photo,
+    List? photos,
     String? category,
     int? price,
     String? description,
+    String? location,
     bool? negotiable,
     String? ownerId,
-    int? avgRating,
-    int? numRatings,
+    int? followCount,
+    int? messageCount,
+    String? status,
     bool? success,
   }) {
     return Product(
       id: id ?? this.id,
       title: title ?? this.title,
-      photo: photo ?? this.photo,
+      photos: photos ?? this.photos,
       category: category ?? this.category,
       price: price ?? this.price,
       description: description ?? this.description,
+      location: location ?? this.location,
       negotiable: negotiable ?? this.negotiable,
       ownerId: ownerId ?? this.ownerId,
-      avgRating: avgRating ?? this.avgRating,
-      numRatings: numRatings ?? this.numRatings,
+      followCount: followCount ?? this.followCount,
+      messageCount: messageCount ?? this.messageCount,
+      status: status ?? this.status,
       success: success ?? this.success,
     );
   }
 }
+
+
+// final productProvider = Provider<Product>((ref) => Product());

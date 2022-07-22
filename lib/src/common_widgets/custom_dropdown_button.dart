@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:muraita_2_0/src/constants/strings.dart';
 
 class CustomDropdownButton extends StatelessWidget {
-  CustomDropdownButton({
+  const CustomDropdownButton({
     Key? key,
     required this.defaultHint,
     required this.listItems,
@@ -16,7 +15,7 @@ class CustomDropdownButton extends StatelessWidget {
   final double? horizontalPadding;
   final double? verticalPadding;
   final Function(String?)? onChanged;
-  String defaultHint;
+  final String defaultHint;
 
   @override
   Widget build(BuildContext context) {

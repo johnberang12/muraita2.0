@@ -42,7 +42,8 @@ class CupertinoHomeScaffold extends StatelessWidget {
 
   BottomNavigationBarItem _buildItem(TabItem tabItem) {
     final itemData = TabItemData.allTabs[tabItem];
-    final color = currentTab == tabItem ? kPrimaryHue : kBlack20;
+    final color =
+        currentTab == tabItem ? AppColors.primaryHue : AppColors.black20;
     return BottomNavigationBarItem(
       icon: Icon(
         itemData!.icon,

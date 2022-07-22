@@ -8,7 +8,7 @@ class CustomText extends StatelessWidget {
     this.align = TextAlign.center,
     this.fontSize = 14,
     this.fontWeight = FontWeight.w300,
-    this.color = kBlack80,
+    this.color = AppColors.black80,
   }) : super(key: key);
 
   final String text;

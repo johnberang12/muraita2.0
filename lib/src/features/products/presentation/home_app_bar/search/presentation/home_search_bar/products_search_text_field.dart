@@ -1,29 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:muraita_2_0/src/constants/strings.dart';
-import '../../data/search_product_repository.dart';
+
+import '../../data/local/sql_search_repository.dart';
 import 'search_controller_provider.dart';
 
 class ProductsSearchTextField extends ConsumerWidget {
   const ProductsSearchTextField({super.key, this.onPopScreen}) : super();
   final VoidCallback? onPopScreen;
-
-  Future<void> _onSubmitValue(BuildContext context, WidgetRef ref) async {
-    final controller = ref.watch(searchRepositoryProvider);
-    final search = ref.watch(searchValueProvider.state).state;
-
-    await controller.addSearch(context, search);
-    ref.read(searchValueProvider.state).state = '';
-    ref.refresh(searchListFutureProvider);
-
-    ///TODO: filter the search list
-
-    onPopScreen!();
-  }
-
-  void _onEditing(String value, WidgetRef ref) {
-    ref.read(searchValueProvider.state).state = value;
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,6 +14,7 @@ class ProductsSearchTextField extends ConsumerWidget {
     // with TextField:
     // https://codewithandrea.com/articles/flutter-text-field-form-validation/
     final search = ref.watch(searchValueProvider.state).state;
+    final controller = ref.watch(searchConrollerProvider);
 
     return Container(
       decoration: BoxDecoration(
@@ -39,7 +23,7 @@ class ProductsSearchTextField extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: TextFormField(
-            controller: ref.watch(searchControllerProvider.state).state,
+            controller: ref.watch(searchEditingControllerProvider.state).state,
             autofocus: true,
             // initialValue: search,
             style: Theme.of(context).textTheme.titleMedium,
@@ -51,19 +35,19 @@ class ProductsSearchTextField extends ConsumerWidget {
 
                 ///add Searched item button
                 onPressed: search.isNotEmpty
-                    ? () => _onSubmitValue(context, ref)
+                    ? () => controller.onSubmitValue(onPopScreen!)
                     : null,
               ),
               suffixIcon: search.isNotEmpty
                   ? IconButton(
                       onPressed: () =>
-                          ref.read(searchControllerProvider).clear(),
+                          ref.read(searchEditingControllerProvider).clear(),
                       icon: const Icon(Icons.close),
                     )
                   : null,
             ),
             // TODO: Implement onChanged
-            onChanged: (value) => _onEditing(value, ref)),
+            onChanged: (value) => controller.onEditing(value)),
       ),
     );
   }

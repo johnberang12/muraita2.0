@@ -5,7 +5,6 @@ import '../../../../constants/app_sizes.dart';
 import '../../../../constants/breakpoints.dart';
 import '../../domain/review.dart';
 
-
 /// Shows the list of reviews for a given product ID
 class ProductReviewsList extends StatelessWidget {
   const ProductReviewsList({super.key, required this.productId});

@@ -8,9 +8,9 @@ import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 class GridLayout extends StatelessWidget {
   const GridLayout({
     super.key,
+    required this.rowsCount,
     required this.itemCount,
     required this.itemBuilder,
-    required this.rowsCount,
     this.rowGap = 10,
     this.columnGap = 10,
   });
@@ -46,8 +46,8 @@ class GridLayout extends StatelessWidget {
       return LayoutGrid(
         columnSizes: columnSizes,
         rowSizes: rowSizes,
-        rowGap: 10, // equivalent to mainAxisSpacing
-        columnGap: 10, // equivalent to crossAxisSpacing
+        rowGap: rowGap, // equivalent to mainAxisSpacing
+        columnGap: columnGap, // equivalent to crossAxisSpacing
         children: [
           // render all the items with automatic child placement
           for (var i = 0; i < itemCount!; i++) itemBuilder(context, i),

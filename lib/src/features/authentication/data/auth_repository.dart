@@ -1,14 +1,18 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:muraita_2_0/src/features/authentication/data/users_repository.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/sign_in_state.dart';
+
 import '../../../common_widgets/alert_dialogs.dart';
 import '../../../constants/strings.dart';
 import '../../../routing/app_router.dart';
-import '../../../utils/delay.dart';
-import '../../../utils/in_memory_store.dart';
+import '../presentation/sign_in/sign_in_controller.dart';
+import 'dart:developer' as dev;
 
 ///copied
 
@@ -22,15 +26,18 @@ abstract class AuthRepository<T> {
     VoidCallback codeSent,
   );
   Future<void> verifyOtpCode(
-      BuildContext context, String otpCode, VoidCallback onSignedIn);
+      BuildContext context, String otpCode, VoidCallback signIn);
   Future<void> signOut();
 }
 
 class FirebaseAuthRepository implements AuthRepository {
+  FirebaseAuthRepository({
+    required this.ref,
+  });
+  Ref ref;
   final _authInstance = FirebaseAuth.instance;
 
   late String _verificationID = kEmptyString;
-  late SignInFormType formType;
 
   @override
   User? get currentUser => FirebaseAuth.instance.currentUser;
@@ -49,8 +56,6 @@ class FirebaseAuthRepository implements AuthRepository {
         ///execute this when verification is complete
       },
       verificationFailed: (FirebaseAuthException exception) async {
-        formType = SignInFormType.register;
-
         ///execute this when verification failed
         showExceptionAlertDialog(
             context: context,
@@ -68,30 +73,39 @@ class FirebaseAuthRepository implements AuthRepository {
         print('entered code auto retrival');
         _verificationID = verificationId;
       },
-      // timeout: const Duration(seconds: 120),
+      timeout: const Duration(seconds: 120),
     );
   }
 
   @override
   Future<void> verifyOtpCode(
-      BuildContext context, String otpCode, VoidCallback onSignedIn) async {
+      BuildContext buildContext, String otpCode, VoidCallback signIn) async {
+    // final controller = ref.read(
+    //     signInControllerProvider(SignInFormType.otpVerification).notifier);
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
       verificationId: _verificationID,
       smsCode: otpCode,
     );
-
-    print(_verificationID);
-    await _authInstance.signInWithCredential(credential).then((value) {
+    await _authInstance.signInWithCredential(credential).then((value) async {
       ///call this function if authentication is successful
-      onSignedIn();
+      // await Future.delayed(const Duration(seconds: 2));
+
+      buildContext.goNamed(AppRoute.landing.name);
+      // signIn;
+
+      // dev.debugger();
     }).whenComplete(() {
       ///thread enteres this block whether or not there is an arror
     }).onError((FirebaseAuthException error, stackTrace) {
+      ref.read(otpTextEditingController).clear();
       showExceptionAlertDialog(
-          context: context, title: kOperationFailed, exception: error.message);
+          context: buildContext,
+          title: kOperationFailed,
+          exception: error.message);
     }).catchError((onError) {
+      ref.read(otpTextEditingController).clear();
       showExceptionAlertDialog(
-          context: context, title: kOperationFailed, exception: onError);
+          context: buildContext, title: kOperationFailed, exception: onError);
     });
   }
 
@@ -102,7 +116,7 @@ class FirebaseAuthRepository implements AuthRepository {
 }
 
 final authRepositoryProvider = Provider<FirebaseAuthRepository>((ref) {
-  final auth = FirebaseAuthRepository();
+  final auth = FirebaseAuthRepository(ref: ref);
   return auth;
 });
 

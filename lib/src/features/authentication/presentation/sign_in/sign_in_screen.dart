@@ -1,54 +1,24 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muraita_2_0/src/features/authentication/data/auth_repository.dart';
+import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/sign_in_button.dart';
 import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/sign_in_controller.dart';
 import 'package:muraita_2_0/src/features/authentication/presentation/sign_in/sign_in_state.dart';
 import 'package:muraita_2_0/src/routing/app_router.dart';
 import 'package:muraita_2_0/src/utils/async_value_ui.dart';
-import '../../../../common_widgets/custom_body.dart';
+import 'package:pinput/pinput.dart';
 import '../../../../common_widgets/outlined_text_field.dart';
-import '../../../../common_widgets/primary_button.dart';
-import '../../../../common_widgets/responsive_scrollable_card.dart';
+import '../../../../constants/app_colors.dart';
 import '../../../../constants/app_sizes.dart';
 import '../../../../constants/strings.dart';
 import '../../../../common_widgets/custom_text_box.dart';
+import '../../../../constants/styles.dart';
 
-import '../../../products/presentation/add_product/add_product_screen.dart';
-import '../../data/users_repository.dart';
-import '../../domain/app_user.dart';
-
-class SignInScreen extends StatelessWidget {
-  const SignInScreen({
-    Key? key,
-    required this.formType,
-  }) : super(key: key);
-  final SignInFormType formType;
-
-  ///keys for unit testing...find.byKey()
-  static const nameKey = Key('name');
-  static const phoneNumberKey = Key('phoneNumber');
-
-  @override
-  Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: CustomBody(
-        child: Center(
-          child: SingInContents(
-            formType: formType,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class SingInContents extends ConsumerStatefulWidget {
-  SingInContents({
+class SignInScreen extends ConsumerStatefulWidget {
+  SignInScreen({
     Key? key,
     this.onSignedIn,
     required this.formType,
@@ -58,115 +28,84 @@ class SingInContents extends ConsumerStatefulWidget {
   SignInFormType formType;
 
   @override
-  ConsumerState<SingInContents> createState() => _SignInContentsState();
+  ConsumerState<SignInScreen> createState() => _SignInScreenState();
 }
 
 /// A widget for name and phone number authentication, supporting the following:
 /// - register (create an account)
 /// - otpVerification
-class _SignInContentsState extends ConsumerState<SingInContents> {
+class _SignInScreenState extends ConsumerState<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
   final _node = FocusScopeNode();
 
   final _numberController = TextEditingController();
-  final _otpController = TextEditingController();
 
   String get phoneNumber => _countryCode + _numberController.text;
-  String get otpCode => _otpController.text;
+  // String _otpCode = '';
 
-  final String _countryCode = '+1';
+  String _countryCode = '+1';
 
   var _submitted = false;
-  late Timer _timer;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    // dependOnInheritedWidgetOfExactType();
+  }
 
   @override
   void dispose() {
+    final controller =
+        ref.read(signInControllerProvider(widget.formType).notifier);
+
     _node.dispose();
 
     _numberController.dispose();
-    _timer.cancel();
+    controller.timer.cancel();
     super.dispose();
-  }
-
-  void _startTimer() {
-    ref.read(counterControllerProvider.state).state = 120;
-    _timer = Timer.periodic(const Duration(milliseconds: 200), (_) {
-      int value = ref.read(counterControllerProvider.state).state--;
-      if (value <= 0) {
-        _timer.cancel();
-      }
-    });
-  }
-
-  void _codeSent() {
-    _submitted = false;
-    final state = ref.watch(signInControllerProvider(widget.formType));
-    _updateFormType(state.secondaryActionFormType);
-    _startTimer();
   }
 
   Future<void> _submitPhoneNumber(SignInState state) async {
     setState(() => _submitted = true);
-    if (_formKey.currentState!.validate()) {
-      final controller =
-          ref.read(signInControllerProvider(widget.formType).notifier);
-      await controller.submitPhoneNumber(context, phoneNumber, _codeSent);
-    }
-  }
+    print(phoneNumber);
+    print(phoneNumber);
+    print(phoneNumber);
 
-  Future<void> _submitOTP(SignInState state) async {
-    setState(() => _submitted = true);
     final controller =
         ref.read(signInControllerProvider(widget.formType).notifier);
-    final success =
-        await controller.submitOtpCode(context, otpCode, _onSignedIn);
-    if (success) {
-      _updateUserData();
-      _onSignedIn();
-    }
+    await controller.submitPhoneNumber(context, phoneNumber);
+    setState(() => _submitted = false);
   }
 
-  void _onSignedIn() {
-    final authRepository = ref.watch(authRepositoryProvider);
-    final user = authRepository.currentUser;
-    final verified = authRepository.currentUser != null;
-    final hasName =
-        user?.displayName != null && user?.displayName != kEmptyString;
-    if (verified && hasName) {
-      context.goNamed(AppRoute.home.name);
-    } else if (verified && !hasName) {
-      context.pushNamed(AppRoute.nameregisrtation.name);
-    }
-    // widget.onSignedIn?.call();
+  void _signIn() {
+    widget.onSignedIn?.call();
+
+    print('mounted mounter mounted');
+    context.goNamed(AppRoute.landing.name);
+
+    // Navigator.of(context).pop();
   }
 
-  Future<void> _updateUserData() async {
-    final authRepository = ref.watch(authRepositoryProvider);
-    final repository = UsersRepository();
-    final id = authRepository.currentUser?.uid ?? documentIdFromCurrentDate();
-    final uid = authRepository.currentUser?.uid;
-    final phone = authRepository.currentUser?.phoneNumber;
-    final user = AppUser(id: id, uid: uid!, phoneNumber: phone!);
-    repository.setUser(user);
-  }
+  // Future<void> _submitOtp(String otpCode) async {
+  //   final controller =
+  //       ref.read(signInControllerProvider(widget.formType).notifier);
+  //   await controller.submitOtpCode(context, otpCode, widget.onSignedIn!);
+  //   if (!mounted) return;
+  //   SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+  //     context.goNamed(AppRoute.landing.name);
+  //   });
+  // }
 
-  void _phoneNumberEditingComplete(SignInState state) {
-    setState(() => _submitted = true);
-    FocusScope.of(context).unfocus();
-    _submitPhoneNumber(state);
-  }
+  // void _phoneNumberEditingComplete(SignInState state) {
+  //   setState(() => _submitted = true);
+  //   FocusScope.of(context).unfocus();
+  // }
 
   void _onEditing() {
     setState(() {
       _submitted = false;
     });
-  }
-
-  void _updateFormType(SignInFormType formType) {
-    ref
-        .read(signInControllerProvider(widget.formType).notifier)
-        .updateFormType(formType);
-    _numberController.clear();
   }
 
   @override
@@ -176,92 +115,138 @@ class _SignInContentsState extends ConsumerState<SingInContents> {
             .select((state) => state.value),
         (_, state) => state.showAlertDialogOnError(context));
     final state = ref.watch(signInControllerProvider(widget.formType));
+    final controller =
+        ref.read(signInControllerProvider(widget.formType).notifier);
 
     const registerType = SignInFormType.register;
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CustomTextBox(
-            state.registrationGuideText,
-            fontSize: width * registrationGuideSize,
-          ),
-          SizedBox(height: height * 0.04),
-          state.formType == registerType
-              ? CustomTextBox(kPhoneNumberDisclosure,
-                  fontSize: width * phoneNumberDisclosureSize)
-              : const SizedBox(),
-          SizedBox(height: height * 0.10),
-          Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: ResponsiveScrollableCard(
+    return Scaffold(
+      body: Container(
+        color: AppColors.primaryHue,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Sizes.p16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomTextBox(
+                state.registrationGuideText,
+                fontSize: width * registrationGuideSize,
+              ),
+              SizedBox(height: height * 0.04),
+              state.formType == registerType
+                  ? CustomTextBox(kPhoneNumberDisclosure,
+                      fontSize: width * phoneNumberDisclosureSize)
+                  : const SizedBox(),
+              SizedBox(height: height * 0.10),
+              Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: FocusScope(
-              node: _node,
-              child: Form(
-                  key: _formKey,
+                  node: _node,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ///phoneNumber text field
-                      OutlinedTextField(
-                        key: SignInScreen.phoneNumberKey,
-                        height: height * outlineInputHeight,
-                        controller: state.formType == registerType
-                            ? _numberController
-                            : _otpController,
-                        // autofocus: true,
-                        labelText: state.phoneNumberLabelText,
-                        hintText: state.inputHintText,
-                        enabled: !state.isLoading,
-                        validator: (number) => !_submitted
-                            ? null
-                            : state.formType == registerType
-                                ? state.numberErrorText(number!)
-                                : state.otpErrorText(number!),
-                        textInputAction: TextInputAction.done,
-                        keyboardType: TextInputType.number,
-                        onChange: (value) => _onEditing(),
-                        onEditingComplete: () =>
-                            _phoneNumberEditingComplete(state),
-                        // inputFormatters: widget.formType == registerType
-                        //     ? [
-                        //         ValidatorInputFormatter(
-                        //           editingValidator:
-                        //               NumberEditingRegexValidator(),
-                        //         ),
-                        //       ]
-                        //     : null,
-                        maxLength: state.numberMaxLength,
-                      ),
+
+                      state.formType == registerType
+                          ? OutlinedTextField(
+                              height: height * outlineInputHeight,
+                              prefix: state.formType == registerType
+                                  ? _countryCodePicker()
+                                  : const SizedBox(),
+                              controller: _numberController,
+                              autofocus: true,
+                              labelText: state.phoneNumberLabelText,
+                              hintText: kPhoneNumberInputHint,
+                              enabled: !state.isLoading,
+                              validator: (number) => !_submitted
+                                  ? null
+                                  : state.numberErrorText(number!),
+                              textInputAction: TextInputAction.done,
+                              keyboardType: TextInputType.number,
+                              onChange: (value) => _onEditing(),
+                              onEditingComplete: () =>
+                                  _submitPhoneNumber(state),
+                              // inputFormatters: widget.formType == registerType
+                              //     ? [
+                              //         ValidatorInputFormatter(
+                              //           editingValidator:
+                              //               NumberEditingRegexValidator(),
+                              //         ),
+                              //       ]
+                              //     : null,
+                              maxLength: state.numberMaxLength,
+                            )
+                          : _pinPut(),
 
                       SizedBox(height: height * 0.025),
 
                       ///this button only appears when form state is otpVerification form state
                       state.formType != registerType
                           ? _ResendButton(
-                              onSubmit: () => _updateFormType(
+                              onSubmit: () => controller.updateFormType(
                                   state.secondaryActionFormType),
-                              height: height,
+                              height: height * .070,
                             )
                           : const SizedBox(),
-                      PrimaryButton(
-                        text: state.primaryButtonText,
-                        isLoading: state.isLoading,
-                        onPressed: state.isLoading || _submitted
-                            ? null
-                            : state.formType == registerType
-                                ? () => _submitPhoneNumber(state)
-                                : () => _submitOTP(state),
-                      ),
+                      state.formType == registerType
+                          ? SignInButton(
+                              label: state.primaryButtonText,
+                              height: height * .070,
+                              width: double.infinity,
+                              onPressed:
+                                  // state.isLoading || _submitted
+                                  //     ? null
+                                  //     :
+                                  () => _submitPhoneNumber(state),
+                            )
+                          : const SizedBox(),
                     ],
-                  )),
-            )),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
+    );
+  }
+
+  final defaultPinTheme = PinTheme(
+    width: 56,
+    height: 56,
+    textStyle: const TextStyle(
+        fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white),
+    decoration: BoxDecoration(
+      color: AppColors.primaryShade60,
+      // border: Border.all(color: AppColors.primaryShade60),
+      borderRadius: BorderRadius.circular(20),
+    ),
+  );
+
+  Widget _pinPut() {
+    final controller =
+        ref.read(signInControllerProvider(widget.formType).notifier);
+    return Pinput(
+        length: 6,
+        controller: ref.read(otpTextEditingController.state).state,
+        defaultPinTheme: defaultPinTheme,
+        onCompleted: (pin) => controller.submitOtpCode(context, pin, _signIn),
+        pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+        androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsRetrieverApi);
+  }
+
+  Widget _countryCodePicker() {
+    return CountryCodePicker(
+      onChanged: (country) => _countryCode = country.dialCode!,
+      initialSelection: '+1',
+      showCountryOnly: true,
+      showDropDownButton: true,
+      showOnlyCountryWhenClosed: false,
+      flagWidth: 20,
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+      textStyle: Styles.k16.copyWith(color: Colors.white),
     );
   }
 }
@@ -278,8 +263,10 @@ class _ResendButton extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        PrimaryButton(
-          text:
+        SignInButton(
+          height: height,
+          width: double.infinity,
+          label:
               seconds < 1 ? 'Resend code' : 'Resend code after $seconds secs.',
           onPressed: seconds < 1 ? onSubmit : null,
         ),

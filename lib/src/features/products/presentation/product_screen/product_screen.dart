@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:muraita_2_0/src/features/products/presentation/product_screen/product_average_rating.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:muraita_2_0/src/features/products/presentation/product_screen/app_bar_photo_gallery.dart';
+import 'package:muraita_2_0/src/features/products/presentation/product_screen/other_post_by_seller.dart';
+
+import 'package:muraita_2_0/src/features/products/presentation/product_screen/product_details_widget.dart';
+
 import 'package:muraita_2_0/src/localization/string_hardcoded.dart';
+
 import '../../../../common_widgets/async_value_widget.dart';
-import '../../../../common_widgets/custom_image.dart';
+
 import '../../../../common_widgets/empty_placeholder_widget.dart';
 import '../../../../common_widgets/responsive_center.dart';
-import '../../../../common_widgets/responsive_two_column_layout.dart';
-import '../../../../constants/app_colors.dart';
+
 import '../../../../constants/app_sizes.dart';
 
-import '../../../../utils/currency_formatter.dart';
-import '../../../reviews/presentation/product_reviews/product_reviews_list.dart';
+import '../../../../routing/app_router.dart';
 import '../../data/products_repository.dart';
 import '../../domain/product.dart';
-import '../home_app_bar/home_app_bar.dart';
-import 'product_bottom_bar.dart';
-import 'leave_review_action.dart';
+
+import 'product_bottom_bar/presentation/product_bottom_bar.dart';
 
 /// Shows the product page for a given product ID.
 class ProductScreen extends StatelessWidget {
@@ -25,10 +30,12 @@ class ProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final height = MediaQuery.of(context).size.height;
     return Scaffold(
+      // extendBodyBehindAppBar: true,
       body: Consumer(
         builder: (context, ref, _) {
-          final productValue = ref.watch(productProvider(productId));
+          final productValue = ref.watch(productStreamProvider(productId));
           return AsyncValueWidget<Product?>(
             value: productValue,
             data: (product) => product == null
@@ -41,17 +48,51 @@ class ProductScreen extends StatelessWidget {
                         flex: 88,
                         child: CustomScrollView(
                           slivers: [
-                            const SliverAppBar(
-                              floating: true,
-                              backgroundColor: appBackground,
-                              foregroundColor: kPrimaryHue,
-                              title: Icon(Icons.home),
+                            SliverAppBar(
+                              leadingWidth: 100,
+                              leading: Row(
+                                children: [
+                                  IconButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      icon: const Icon(
+                                          Icons.arrow_back_ios_new_outlined)),
+                                  IconButton(
+                                      onPressed: () =>
+                                          context.goNamed(AppRoute.home.name),
+                                      icon: const Icon(
+                                        Icons.home_outlined,
+                                        size: 30,
+                                      )),
+                                ],
+                              ),
+                              actions: [
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.share),
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.more_vert),
+                                )
+                              ],
+                              pinned: true,
+                              stretch: true,
+                              expandedHeight: 300,
+                              flexibleSpace: FlexibleSpaceBar(
+                                  background: AppBarPhotoGallery(
+                                product: product,
+                              )),
                             ),
                             ResponsiveSliverCenter(
-                              padding: const EdgeInsets.all(Sizes.p16),
-                              child: ProductDetails(product: product),
+                              padding: const EdgeInsets.all(Sizes.p4),
+                              child: ProductDetailsWidget(product: product),
                             ),
-                            ProductReviewsList(productId: productId),
+                            // ProductReviewsList(productId: productId),
+                            ResponsiveSliverCenter(
+                                child: OtherProductsWidget(
+                              product: product,
+                            ))
                           ],
                         ),
                       ),
@@ -64,59 +105,6 @@ class ProductScreen extends StatelessWidget {
                   ),
           );
         },
-      ),
-    );
-  }
-}
-
-/// Shows all the product details along with actions to:
-/// - leave a review
-/// - add to cart
-class ProductDetails extends StatelessWidget {
-  const ProductDetails({super.key, required this.product});
-  final Product product;
-
-  @override
-  Widget build(BuildContext context) {
-    final priceFormatted = kCurrencyFormatter.format(product.price);
-
-    return ResponsiveTwoColumnLayout(
-      startContent: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(Sizes.p16),
-          child: Image.asset(
-            'assets/products/bruschetta-plate.jpg',
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-      spacing: Sizes.p16,
-      endContent: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(Sizes.p16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(product.title!,
-                  style: Theme.of(context).textTheme.headline6),
-              gapH8,
-              Text(product.description!),
-              // Only show average if there is at least one rating
-              if (product.numRatings >= 1) ...[
-                gapH8,
-                ProductAverageRating(product),
-              ],
-              gapH8,
-              const Divider(),
-              gapH8,
-              Text(priceFormatted,
-                  style: Theme.of(context).textTheme.headline5),
-              gapH8,
-              LeaveReviewAction(productId: product.id),
-              const Divider(),
-            ],
-          ),
-        ),
       ),
     );
   }

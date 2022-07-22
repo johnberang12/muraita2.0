@@ -6,8 +6,9 @@ class CustomListTile extends StatelessWidget {
     Key? key,
     this.thumbnail,
     this.title,
-    this.subTitle,
-    this.caption,
+    this.location,
+    this.price,
+    this.status,
     this.trailing1,
     this.trailing2,
     this.expansionTile,
@@ -16,8 +17,9 @@ class CustomListTile extends StatelessWidget {
 
   final Widget? thumbnail;
   final Widget? title;
-  final Widget? subTitle;
-  final Widget? caption;
+  final Widget? location;
+  final Widget? price;
+  final Widget? status;
   final List<Widget>? trailing1;
   final List<Widget>? trailing2;
   final ExpansionTile? expansionTile;
@@ -40,18 +42,16 @@ class CustomListTile extends StatelessWidget {
               flex: 4,
               child: _ProductDescription(
                 title: title,
-                subTitle: subTitle,
-                caption: caption,
+                subTitle: location,
+                caption: price,
+                status: status,
                 trailing1: trailing1,
                 trailing2: trailing2,
               ),
             ),
-            const FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Icon(
-                Icons.more_vert,
-                size: 16.0,
-              ),
+            const Icon(
+              Icons.more_vert,
+              size: 16.0,
             ),
           ],
         ),
@@ -66,6 +66,7 @@ class _ProductDescription extends StatelessWidget {
       this.title,
       this.subTitle,
       this.caption,
+      this.status,
       this.trailing1,
       this.trailing2})
       : super(key: key);
@@ -73,6 +74,7 @@ class _ProductDescription extends StatelessWidget {
   final Widget? title;
   final Widget? subTitle;
   final Widget? caption;
+  final Widget? status;
   final List<Widget>? trailing1;
   final List<Widget>? trailing2;
 
@@ -81,50 +83,44 @@ class _ProductDescription extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: Sizes.p12),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            flex: 1,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  title ?? const SizedBox(),
-                  gapH4,
-                  subTitle ?? const SizedBox(),
-                  gapH8,
-                  caption ?? const SizedBox(),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
+            flex: 85,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: double.infinity,
-                ),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: trailing1 ?? const [],
-                      ),
-                      gapW8,
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: trailing2 ?? const [],
-                      )
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      title ?? const SizedBox(),
+                      gapH4,
+                      subTitle ?? const SizedBox(),
+                      gapH8,
+                      caption ?? const SizedBox(),
                     ],
                   ),
                 ),
               ],
+            ),
+          ),
+          Expanded(
+            flex: 15,
+            child: SizedBox(
+              height: double.infinity,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                    children: trailing1 ?? const [],
+                  ),
+                  gapW8,
+                  Row(
+                    children: trailing2 ?? const [],
+                  )
+                ],
+              ),
             ),
           ),
         ],
